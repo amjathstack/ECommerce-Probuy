@@ -1,0 +1,13 @@
+import admin from "firebase-admin";
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: "probuyecom",
+      clientEmail: "firebase-adminsdk-fbsvc@probuyecom.iam.gserviceaccount.com",
+      privateKey: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDPQ4alRoMzZFN9\nCZJyKE6/rOPNz4wnsruhO41ZYQ9NifUW+6NcNPtff+GWz5OZJ/kCr+eryYfZRe2p\nNelVQ3ose818WU1VDcZ+GyL9gj2QJhpPv8CQDIcDj56QmcODhFDAIAXca31pkaOU\nOaQFeyjLQzL2p4ZHOs1+NOIe7cOG2y26Azzex3V5k4TuLeks1hodpyQLfY0A6FPX\nJ2/fawgY/MPlFn4iOAeEzlRLSGgZERu96egwqGo2HP43RLvPdbh5CCtfYWGpd+y6\nrWp9YPiHpUNCTtVnND23KNtZ2YpqYmHrfYIHuSml95ltnNldDrHEXaI8XhTMTiWo\nWXpr4zzHAgMBAAECggEAHOhBnMaPYPkSreNKYhKeHRyrbxaN6TGD+tJX/gnL/RgL\nL2fsWl1nW+P1njeYUemh0M6g5LRIdrTKl2mWABbXsOGZgMjhwMWZlBgL0si59mNi\nExJe9JhSslvzFR7lBnBLZOhyeNIjHTi7VF6PslYBlAvszTsDPucEJyCQExk9Ro8F\n5DM7342tr5kTVdt97sMm6qvdnX5ynyvRb6dNONkc+O5a8k3NNYmjaFMNviWPxJJT\nXfsc5JDMGl4yZnKBX90Vc+XMwL8T7/X3V5puorna9KB6H2foplyHv1lnPPwBFUad\nIdJqDCMUCNdHeVkeU+7Cxy9wdXUInHfyp5Jkua08WQKBgQDyiLqPSh1ZDlTSbA9j\nzrJC4ZQUibvQo33nRJTnUgcULmjrmGJVC5yccTNfaRi71lNPOqNICBzHTzpyijnY\n4B8ypG4zs7HtsYEllkFlGoOIBdNIRkM3K6rfbJPOxe2yO4SPA3x3nD3wf+EfQbwY\nDbKKxI6BxWs7fcPBmOE72BKmKQKBgQDaxXsIcS2KzTiJnp8Uej4tMZsY/cHJ4APb\n0Wn36zggY/rJ9JmfkDf+gfRwEVPuPfMVlswnUPRdV2GtR9O7MkMsyDN/s07dbcBE\ncdOD2S6HgGTNIEIBrbsiVMz2jaQPYKE7mVvGFK72Nrqz55uWG4CKtNsNyWbv1qsE\nDRZ2gX/JbwKBgBE7+A3QlW9LnmlpdlqASJiKEQy4kNkNlRfG/tHFOW2MsrXzGSGz\n9ogDX0QrYq+OVlMt9oZa1Tiwf5W+DshDfNQLbS1NWppqX6P9Hl6B2NDkoRPkskgM\nWVMRExvBYtekdRH4jHKvbpNVcvjWofgPmR1VRE8iaTFMCYoLRA4Nl52pAoGADDse\nNcqeETSIBKmpmyt6bmxnj24gd3jevltm4UV1TdpJGyFhtVoKx1/cmqddWeR8wqg7\nobcU8mMAQv/RBpY4yzgmKO2NazPHnAwBF039G/ZBrHYxOobL/49eJiqlEXcFjJ92\nUgy1+23z4jsAp9PBy/9wf8TSzHXj+cYBi36R9mECgYA7mKcVcQp6qFHF9qwGByIj\nvlI9vjRkMiYw8xwsmxa66cfzwL6tbfzJIKM7/Khx2P5WRX7llAzjX0WRL6OQpz/M\n/qKAND/fPir6xq4SsFJ96YjOeVeG4MdCtcBfXNGQ1axdqa9ZHGnaztxTGS3noRpc\na8rfHQ6Erq4Da662jUuZBQ==\n-----END PRIVATE KEY-----\n",
+    }),
+  });
+}
+
+export default admin;
