@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@google/genai": "^1.30.0",
+    "@google/generative-ai": "^0.24.1",
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
     "cloudinary": "^2.8.0",
@@ -22,6 +24,7 @@
     "react-dom": "19.1.0",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
+    "react-type-animation": "^3.2.0",
     "recharts": "^3.4.0",
     "redux": "^5.0.1"
   },

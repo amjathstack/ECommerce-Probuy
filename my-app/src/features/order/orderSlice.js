@@ -5,10 +5,19 @@ import { toast } from "react-toastify";
 
 const URL = "http://localhost:3000/api/order";
 
-export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (userId, thunkAPI) => {
+export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (token, thunkAPI) => {
   try {
-    const token = auth.currentUser?.getIdToken()
-    const response = await axios.get(URL, {headers:{'Content-Type':'application/json', 'Authorization':`Bearer ${token}`}});
+    const response = await axios.get(URL, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    return response.data.message;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");
+  }
+});
+
+export const fetchAllOrders = createAsyncThunk("orders/fetchAllOrders", async (token, thunkAPI) => {
+  try {
+    const response = await axios.get(URL, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    console.log(token)
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");
@@ -18,7 +27,7 @@ export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (userId,
 export const addToOrder = createAsyncThunk("orders/addToOrder", async (order, thunkAPI) => {
   try {
     const token = auth.currentUser?.getIdToken()
-    const response = await axios.post(URL, order, {headers:{'Content-Type':'application/json', 'Authorization':`Bearer ${token}`}});
+    const response = await axios.post(URL, order, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to add item");
@@ -28,6 +37,7 @@ export const addToOrder = createAsyncThunk("orders/addToOrder", async (order, th
 const cartSlice = createSlice({
   name: "orders",
   initialState: {
+    allOrderItems: [],
     orderItems: [],
     loading: false,
     error: null,
@@ -52,6 +62,18 @@ const cartSlice = createSlice({
         state.orderItems = action.payload;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchAllOrders.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allOrderItems = action.payload;
+      })
+      .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

@@ -1,23 +1,26 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Eye, Truck, CheckCircle, Clock, XCircle } from "lucide-react";
-import axios from "axios";
 import { format } from 'date-fns';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllOrders } from "@/features/order/orderSlice";
+import { auth } from "@/firebase";
 
 export default function AdminOrdersList() {
 
 
-    const [ orders, setOrders ] = useState([])
-
-    async function getAllOrders() {
-        const response = await axios.get('http://localhost:3000/api/order/admin');
-        setOrders(response.data.message);
-    }
+    const { allOrderItems } = useSelector((state) => state.orders);
+    const dispatch = useDispatch();
+    const token = auth.currentUser?.accessToken || "";
 
 
     useEffect(() => {
-        getAllOrders()
-    }, [])
+        dispatch(fetchAllOrders(token))
+    }, [dispatch, token]);
+
+    // useEffect(() => {
+    //     console.log(allOrderItems)
+    // }, [allOrderItems]);
 
     const StatusBadge = ({ status }) => {
         const colors = {
@@ -65,7 +68,7 @@ export default function AdminOrdersList() {
                         </thead>
 
                         <tbody>
-                            {orders.map((order) => (
+                            {allOrderItems?.map((order) => (
                                 <tr key={order._id} className="border-b hover:bg-gray-50">
                                     <td className="p-4 font-medium text-gray-800">{order.orderId}</td>
 
@@ -86,7 +89,7 @@ export default function AdminOrdersList() {
                                         <StatusBadge status={order.status} />
                                     </td>
 
-                                    <td className="p-4 text-gray-600">{format(new Date(order.createdAt), 'MMM dd, yyyy HH:mm') }</td>
+                                    <td className="p-4 text-gray-600">{format(new Date(order.createdAt), 'MMM dd, yyyy HH:mm')}</td>
 
                                     <td className="p-4 text-right">
                                         <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 text-sm">

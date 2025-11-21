@@ -2,14 +2,21 @@
 import { X } from "lucide-react";
 import upload_icon from '../../public/icons/upload_icon.svg'
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addProduct } from "@/features/products/productSlice";
+import { useRef, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct, fetchProductTitle } from "@/features/products/productSlice";
+import { auth } from "@/firebase";
 
 export default function AddProductModal({ onClose }) {
 
-    const dispatch = useDispatch();
+    const { productTitle, loading } = useSelector((state) => state.products)
+    const token = auth.currentUser?.accessToken || "";
 
+    const arr = productTitle
+        .split("\n")
+        .filter(line => line.trim() !== "")
+        .map(line => line.replace(/\*\*/g, "").trim());
+    const dispatch = useDispatch();
     const fileInputUseRef1 = useRef(null);
     const [files, setFiles] = useState([]);
     const [previewUrls, setPreviewUrls] = useState([]);
@@ -18,11 +25,18 @@ export default function AddProductModal({ onClose }) {
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('');
     const [stockCount, setStockCount] = useState('');
-
+    const [firstFiletracker, setFirstFiletracker,] = useState(true)
 
     const fileInputChange1 = (file) => {
         setFiles((prev) => [...prev, file]);
         setPreviewUrls((prev) => [...prev, URL.createObjectURL(file)]);
+        if (firstFiletracker) {
+            const formData = new FormData();
+            formData.append('image', file)
+            dispatch(fetchProductTitle(formData));
+            setFirstFiletracker(false)
+        }
+
     }
 
     const handleClickPhoto1 = () => {
@@ -49,10 +63,32 @@ export default function AddProductModal({ onClose }) {
 
         files.forEach((file) => formData.append('image', file));
 
-        dispatch(addProduct(formData));
+        dispatch(addProduct({formData, token}));
+        setFirstFiletracker(true);
         onClose();
-
     }
+
+    useEffect(() => {
+        if (arr[0]) {
+            let titleArray = arr[0].split('');
+            titleArray.forEach((char, index) => {
+                setTimeout(() => {
+                    setTitle((prev) => prev + char);
+                }, 70 * index); 
+            });
+        }
+        if (arr[1]) {
+            let descriptionArray = arr[1].split('');
+            descriptionArray.forEach((char, index) => {
+                setTimeout(() => {
+                    setDescription((prev) => prev + char);
+                }, 40 * index); 
+            });
+        }
+    }, [productTitle]);
+
+
+
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
@@ -106,16 +142,17 @@ export default function AddProductModal({ onClose }) {
                         <label className="block text-sm font-medium mb-1">Product Name</label>
                         <input
                             type="text"
+                            placeholder={loading ? 'Title Generating...' : 'Enter the title'}
                             className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
                             onChange={(e) => setTitle(e.target.value)}
-                            value={title}
+                            value={title || ""}
                         />
                     </div>
 
                     <div className="mt-8">
                         <label className="block text-sm font-medium mb-1">Description</label>
                         <textarea
-
+                            placeholder={loading ? 'Description Generating...' : 'Enter the description'}
                             className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
                             onChange={(e) => setDescription(e.target.value)}
                             value={description}

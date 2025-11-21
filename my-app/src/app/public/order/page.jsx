@@ -1,15 +1,15 @@
 'use client'
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { fetchOrders } from "@/features/order/orderSlice";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "@/firebase";
 
 export default function OrderTable() {
 
-    const [orders, setOrders] = useState([])
+    const dispatch = useDispatch()
+    const { orderItems } = useSelector((state) => state.orders)
+    const token = auth.currentUser?.accessToken || "";
 
-    async function getAllOrders() {
-        const response = await axios.get('http://localhost:3000/api/order/admin');
-        setOrders(response.data.message)
-    }
 
     const statusStyles = {
         Completed: "bg-green-500",
@@ -24,8 +24,8 @@ export default function OrderTable() {
     };
 
     useEffect(() => {
-        getAllOrders()
-    }, [])
+        dispatch(fetchOrders(token))
+    }, [dispatch, token])
 
     return (
 
@@ -43,7 +43,7 @@ export default function OrderTable() {
                     </thead>
 
                     <tbody>
-                        {orders.map((order, i) => (
+                        {Array.isArray(orderItems) && orderItems.map((order, i) => (
                             <tr key={i} className="border-b hover:bg-gray-50 transition">
 
 
@@ -85,29 +85,29 @@ export default function OrderTable() {
             </div>
 
             <div className="md:hidden space-y-4">
-                {orders.map((order, i) => (
+                {Array.isArray(orderItems) && orderItems.map((order, i) => (
                     <div
                         key={i}
                         className="bg-white shadow-md rounded-xl p-4 border border-gray-100"
                     >
                         <div className="flex justify-between mb-2">
                             <span className="font-semibold">Order ID:</span>
-                            <span>{order.orderId}</span>
+                            <span>{order?.orderId}</span>
                         </div>
 
                         <div className="flex justify-between">
                             <span>Subtotal:</span>
-                            <span>${order.subTotal.toFixed(2)}</span>
+                            <span>${order?.subTotal.toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between">
                             <span>Tax:</span>
-                            <span>${order.tax.toFixed(2)}</span>
+                            <span>${order?.tax.toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between">
                             <span>Total:</span>
-                            <span className="font-bold">${order.total.toFixed(2)}</span>
+                            <span className="font-bold">${order?.total.toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between mt-2">

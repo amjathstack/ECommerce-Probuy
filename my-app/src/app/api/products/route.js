@@ -16,11 +16,9 @@ export async function POST(req) {
   try {
 
     const uid = await authenticate(req);
-
     if (!uid) {
       return NextResponse.json({ message: 'User not found!' });
     }
-
     const formData = await req.formData();
     const title = formData.get('title');
     const price = formData.get('price');
@@ -57,7 +55,7 @@ export async function POST(req) {
 
     await productsModel.create({ title, price: Number(price), image: finalImagesArray, description, category, stockCount: Number(stockCount) })
 
-
+    console.log('Added')
     return NextResponse.json({ status: true, message: 'Product added successfully!' });
 
   } catch (error) {

@@ -39,11 +39,8 @@ export async function GET(req) {
         }
 
         const user = await userModel.findOne({ firebaseUid: uid });
-
         await connectDB();
-
         const data = await ordersModel.find({ userId: user?._id });
-
         return NextResponse.json({ status: true, message: data });
 
     } catch (error) {
