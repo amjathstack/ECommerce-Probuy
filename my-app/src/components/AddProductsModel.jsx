@@ -4,7 +4,7 @@ import upload_icon from '../../public/icons/upload_icon.svg'
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, fetchProductTitle } from "@/features/products/productSlice";
+import { addProduct, clearProductDetails, fetchProductTitle } from "@/features/products/productSlice";
 import { auth } from "@/firebase";
 
 export default function AddProductModal({ onClose }) {
@@ -65,7 +65,13 @@ export default function AddProductModal({ onClose }) {
 
         dispatch(addProduct({formData, token}));
         setFirstFiletracker(true);
+        dispatch(clearProductDetails());
         onClose();
+    }
+
+    const closeCard = () => {
+        onClose()
+        dispatch(clearProductDetails());
     }
 
     useEffect(() => {
@@ -91,10 +97,10 @@ export default function AddProductModal({ onClose }) {
 
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 py-20 overflow-scroll-y">
             <div className="bg-white rounded-xl shadow-lg p-6 px-8 relative">
                 <button
-                    onClick={onClose}
+                    onClick={() => closeCard()}
                     className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
                 >
                     <X size={20} />
@@ -142,6 +148,7 @@ export default function AddProductModal({ onClose }) {
                         <label className="block text-sm font-medium mb-1">Product Name</label>
                         <input
                             type="text"
+                            disabled={loading}
                             placeholder={loading ? 'Title Generating...' : 'Enter the title'}
                             className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
                             onChange={(e) => setTitle(e.target.value)}
@@ -153,7 +160,7 @@ export default function AddProductModal({ onClose }) {
                         <label className="block text-sm font-medium mb-1">Description</label>
                         <textarea
                             placeholder={loading ? 'Description Generating...' : 'Enter the description'}
-                            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+                            className="w-full h-35 max-h-40 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
                             onChange={(e) => setDescription(e.target.value)}
                             value={description}
                         />

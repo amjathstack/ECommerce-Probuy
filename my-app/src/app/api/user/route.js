@@ -24,12 +24,13 @@ export async function POST(req) {
 
     try {
 
-        const uid = await authenticate(req);
-        const body = await req.json();
-        const { name, email } = body;
+        const body = await req.formData();
+        const name = body.get('name');
+        const email = body.get('email');
+        const firebaseUid = body.get('firebaseUid');
 
         await connectDB();
-        await userModel.create({ firebaseUid:uid, name, email });
+        await userModel.create({ firebaseUid, name, email });
         return NextResponse.json({ status: true, message: 'User created successfully' });
 
     } catch (error) {

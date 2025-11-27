@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { authUser } from "@/context/authContext";
 
-export default function AddAddressCard({onClose}) {
+export default function AddAddressCard({ onClose }) {
 
     const [form, setForm] = useState({
         fullName: "",
@@ -15,7 +15,7 @@ export default function AddAddressCard({onClose}) {
         province: "",
         postalCode: "",
     });
-    const {user} = authUser()
+    const { user } = authUser()
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
@@ -26,7 +26,7 @@ export default function AddAddressCard({onClose}) {
     };
 
     const handleSubmit = (e) => {
-        const dataToSend = { ...form, userId:user?._id }
+        const dataToSend = { ...form, userId: user?._id }
         e.preventDefault();
         dispatch(addAddress(form));
         dispatch(addToAddress(dataToSend));
@@ -35,11 +35,14 @@ export default function AddAddressCard({onClose}) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="max-w-lg mx-auto bg-white shadow-lg rounded-xl p-6">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                    Shipping Details
-                </h2>
-                <button onClick={() => onClose(false)}>X</button>
+            <div className="max-w-lg mx-auto bg-white shadow-lg rounded-xl p-6 w-[90%] md:w-auto">
+                <div className="flex items-center w-full justify-center">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                        Shipping Details
+                    </h2>
+                    <button onClick={() => onClose(false)}>X</button>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
 
                     <div className="mt-4">

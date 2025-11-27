@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { auth } from "@/firebase";
+import { toast } from "react-toastify";
 
 
 const URL = "http://localhost:3000/api/products";
@@ -42,6 +42,16 @@ export const addProduct = createAsyncThunk("products/addProduct", async ({formDa
   }
 });
 
+export const deleteProduct = createAsyncThunk("products/addProduct", async({productId, token}, thunkAPI) => {
+  try {
+    const response = await axios.delete(URL, {data:{productId}, headers:{ 'Content-Type' : 'application/json', Authorization:` Bearer ${token}` }});
+    toast.success(response.data.message);
+    return productId
+  } catch (error) {
+    return thunkAPI.rejectWithValue(err.response?.data || "Failed to add products");
+  }
+})
+
 
 
 const productsSlice = createSlice({
@@ -56,6 +66,9 @@ const productsSlice = createSlice({
     clearCart: (state) => {
       state.products = [];
     },
+    clearProductDetails: (state) => {
+      state.productTitle = '';
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -98,5 +111,5 @@ const productsSlice = createSlice({
   },
 });
 
-export const { clearCart } = productsSlice.actions;
+export const { clearCart, clearProductDetails } = productsSlice.actions;
 export default productsSlice.reducer;

@@ -7,6 +7,7 @@ const productsSchema = new mongoose.Schema({
     image:{type:Array, required:true},
     category:{type:String, required:true},
     stockCount:{type:Number, required:true, default:0},
+    comments:{type:Array, default:[]},
 })
 
 const productsModel = mongoose.models.Products || mongoose.model('Products', productsSchema);

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
     return (
-        <div className="w-full flex justify-center mt-[70px]">
+        <div className="w-full flex justify-center mt-[35px] sm:mt-[70px]">
             <div className="col-span-2 w-[90%]">
                 <motion.div
                     initial={{ opacity: 0, y: 8 }}
@@ -28,16 +28,16 @@ export default function Hero() {
                 <div className="mt-6 grid grid-cols-2 gap-4">
                     <div className="flex items-center h-[150px] rounded-xl bg-white p-4 shadow-lg">
                         <div className="ml-[10px]">
-                            <h3 className="text-[20px] font-semibold">Seller Spotlight</h3>
-                            <p className="mt-1 text-[15px] text-gray-600">Handmade ceramics from ClayCorner — free shipping this week.</p>
+                            <h3 className="text-[17px] sm:text-[20px] font-semibold">Seller Spotlight</h3>
+                            <p className="mt-1 text-[14px] sm:text-[17px] text-gray-600">Handmade ceramics from ClayCorner — free shipping this week.</p>
                         </div>
                     </div>
 
 
                     <div className="flex items-center h-[150px] rounded-xl bg-white p-4 shadow-lg">
                         <div className="ml-[10px]">
-                            <h3 className="text-[20px] font-semibold">Secure Payments</h3>
-                            <p className="mt-1 text-[15px] text-gray-600">We support cards, PayPal, and major wallets.</p>
+                            <h3 className="text-[17px] sm:text-[20px] font-semibold">Secure Payments</h3>
+                            <p className="mt-1 text-[14px] sm:text-[17px] text-gray-600">We support cards, PayPal, and major wallets.</p>
                         </div>
                     </div>
                 </div>

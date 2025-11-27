@@ -8,7 +8,7 @@ export async function POST(req) {
     const form = await req.formData();
 
     const image = form.get("image");
-    const prompt = form.get("prompt") || "Give me a one title and 20 wrods of description only don't generate anything";
+    const prompt = form.get("prompt") || "Give me a one title and description only don't generate anything Note:Title should contain 8 words description should contain 35 words, Don't Generate any other words or letter";
 
   
     const bytes = Buffer.from(await image.arrayBuffer());

@@ -9,7 +9,7 @@ import { auth } from "@/firebase";
 export default function AdminOrdersList() {
 
 
-    const { allOrderItems } = useSelector((state) => state.orders);
+    const { allOrderItems = [] } = useSelector((state) => state.orders);
     const dispatch = useDispatch();
     const token = auth.currentUser?.accessToken || "";
 
@@ -17,10 +17,6 @@ export default function AdminOrdersList() {
     useEffect(() => {
         dispatch(fetchAllOrders(token))
     }, [dispatch, token]);
-
-    // useEffect(() => {
-    //     console.log(allOrderItems)
-    // }, [allOrderItems]);
 
     const StatusBadge = ({ status }) => {
         const colors = {
@@ -47,7 +43,7 @@ export default function AdminOrdersList() {
     };
 
     return (
-        <div className="w-[85%] bg-gray-50 p-10 ml-[15%]">
+        <div className="w-full md:w-[85%] bg-gray-50 md:p-10 p-1 md:ml-[15%]">
             <div className="p-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">
                     Admin — Orders List
@@ -68,8 +64,8 @@ export default function AdminOrdersList() {
                         </thead>
 
                         <tbody>
-                            {allOrderItems?.map((order) => (
-                                <tr key={order._id} className="border-b hover:bg-gray-50">
+                            {Array.isArray(allOrderItems) && allOrderItems?.map((order, index) => (
+                                <tr key={index} className="border-b hover:bg-gray-50">
                                     <td className="p-4 font-medium text-gray-800">{order.orderId}</td>
 
                                     <td className="p-4">

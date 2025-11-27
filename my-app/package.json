@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.35.5",
     "@google/genai": "^1.30.0",
     "@google/generative-ai": "^0.24.1",
     "@reduxjs/toolkit": "^2.9.0",

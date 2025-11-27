@@ -1,4 +1,3 @@
-import { auth } from "@/firebase";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,17 +15,15 @@ export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (token, 
 
 export const fetchAllOrders = createAsyncThunk("orders/fetchAllOrders", async (token, thunkAPI) => {
   try {
-    const response = await axios.get(URL, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
-    console.log(token)
+    const response = await axios.get("http://localhost:3000/api/order/admin", { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");
   }
 });
 
-export const addToOrder = createAsyncThunk("orders/addToOrder", async (order, thunkAPI) => {
+export const addToOrder = createAsyncThunk("orders/addToOrder", async ({ order, token }, thunkAPI) => {
   try {
-    const token = auth.currentUser?.getIdToken()
     const response = await axios.post(URL, order, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
     return response.data.message;
   } catch (err) {

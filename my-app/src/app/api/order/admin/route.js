@@ -3,7 +3,7 @@ import connectDB from "../../../../../config/connectDB";
 import ordersModel from "../../../../../models/Order";
 import authenticate from "../../../../../middleware/authenticate";
 
-export async function GET() {
+export async function GET(req) {
 
     try {
         const uid = await authenticate(req);

@@ -19,7 +19,6 @@ export async function POST(req) {
         const response = await ordersModel.create({
             userId: user?._id, orderId, items, subTotal: Number(subTotal), tax: Number(tax), total: Number(total), paymentStatus, paymentMethod, address
         })
-
         return NextResponse.json({ status: true, message: response });
 
     } catch (error) {

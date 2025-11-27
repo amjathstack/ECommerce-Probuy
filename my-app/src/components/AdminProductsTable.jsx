@@ -1,7 +1,14 @@
 "use client";
+import { deleteProduct } from "@/features/products/productSlice";
+import { auth } from "@/firebase";
 import { Edit, Trash2 } from "lucide-react";
+import { useDispatch } from "react-redux";
 
 export default function AdminProductsTable({ products }) {
+
+  const dispatch = useDispatch();
+  const token = auth.currentUser?.accessToken;
+
   return (
     <div className="overflow-x-auto bg-white shadow">
       <table className="min-w-full text-left text-gray-600">
@@ -29,7 +36,7 @@ export default function AdminProductsTable({ products }) {
                   <button className="text-indigo-600 hover:text-indigo-800 mr-3">
                     <Edit size={18} />
                   </button>
-                  <button className="text-red-500 hover:text-red-700">
+                  <button onClick={() => dispatch(deleteProduct({productId:p._id, token}))} className="text-red-500 hover:text-red-700">
                     <Trash2 size={18} />
                   </button>
                 </td>

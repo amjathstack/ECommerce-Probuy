@@ -1,6 +1,6 @@
 'use client'
 import { authUser } from "@/context/authContext";
-import { closeProfileMenu } from "@/features/components/componentsSlice";
+import { closeProfileMenu, openUserProfile } from "@/features/components/componentsSlice";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -55,7 +55,7 @@ export default function ProfileMenu({ name, profileMenuStatus, onClose }) {
             <p className="text-[16px] px-3">Hi!, {name}</p>
             <ul className="style-none mt-2">
                 <li onClick={() => router.push('/public/order')} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">My Orders</li>
-                <li className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">Settings</li>
+                <li onClick={() => dispatch(openUserProfile())} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">Profile</li>
                 <li onClick={() => handleLogout()} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">Logout</li>
             </ul>
         </div>

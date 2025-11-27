@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     loginCardStatus: false,
-    signUpCardStatus:false,
-    profileMenuStatus:false,
+    signUpCardStatus: false,
+    profileMenuStatus: false,
+    userProfileStatus: false,
 }
 
 const componentsSlice = createSlice({
@@ -23,7 +24,6 @@ const componentsSlice = createSlice({
         },
         closeProfileMenu: (state) => {
             state.profileMenuStatus = false
-            console.log('Done')
         },
 
         openSignUpCard: (state) => {
@@ -34,16 +34,25 @@ const componentsSlice = createSlice({
             state.signUpCardStatus = false
         },
 
+        openUserProfile: (state) => {
+            state.userProfileStatus = true
+        },
+        closeUserProfile: (state) => {
+            state.userProfileStatus = false
+        },
+
 
     }
 });
 
 export const { openLoginCard,
-               closeLoginCard,
-               openProfileMenu, 
-               closeProfileMenu,
-               openSignUpCard,
-               closeSignUpCard,
-              } = componentsSlice.actions;
+    closeLoginCard,
+    openProfileMenu,
+    closeProfileMenu,
+    openSignUpCard,
+    closeSignUpCard,
+    openUserProfile,
+    closeUserProfile
+} = componentsSlice.actions;
 
 export default componentsSlice.reducer;

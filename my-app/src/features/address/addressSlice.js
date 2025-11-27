@@ -1,4 +1,3 @@
-import { auth } from "@/firebase";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 

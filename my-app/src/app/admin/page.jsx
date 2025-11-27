@@ -32,7 +32,7 @@ const Dashboard = () => {
   }, [])
 
   return (
-    <div className="w-[85%] bg-gray-50 flex ml-[15%]">
+    <div className="w-full md:w-[85%] bg-gray-50 flex md:ml-[15%]">
       <main className="flex-1 p-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Dashboard Overview
@@ -76,22 +76,6 @@ const Dashboard = () => {
             <p className="text-sm text-green-600 mt-1">+5 new today</p>
           </div>
         </div>
-
-
-        <div className="bg-white rounded-xl shadow p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">
-            Monthly Sales
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={salesData}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="sales" fill="#6366f1" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
 
         <div className="bg-white rounded-xl shadow p-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">

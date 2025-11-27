@@ -1,20 +1,15 @@
 'use client'
 import React, { useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/features/products/productSlice";
+import { useRouter } from "next/navigation";
 
 
 export default function Products() {
 
-  const { products } = useSelector((state) => state.products);
-  const dispatch = useDispatch()
-
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [])
+  const { products = [] } = useSelector((state) => state.products);
+  const router = useRouter();
 
   return (
 
@@ -27,9 +22,8 @@ export default function Products() {
 
 
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-          {products?.map((p) => (
-            <Link href={`public/product/${p._id}`} key={p._id}>
-              <div className="cursor-pointer relative group bg-white border border-gray-100 overflow-hidden rounded-[5px]">
+          {Array.isArray(products) && products?.map((p) => (
+              <div key={p._id} onClick={() => router.push(`product/${p._id}`)} className="cursor-pointer relative group bg-white border border-gray-100 overflow-hidden rounded-[5px]">
                 <div className="aspect-[4/3] bg-gray-50">
                   <Image
                     src={p?.image?.[0] || "/fallback.png"}
@@ -42,17 +36,17 @@ export default function Products() {
                 <div className="p-4 relative h-[95px]">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h4 className="text-sm md:font-semibold text-md lg:font-semibold lg:text-[15px] md:text-[15px]">{p.title.slice(0, 18)}{p.title.length > 18 && <span>....</span>}</h4>
-                      <p className="text-xs text-gray-500 mt-1">by <span className="font-medium text-gray-700">{p.vendor}</span></p>
+                      <h4 className="text-sm md:font-semibold text-md lg:font-semibold lg:text-[15px] md:text-[15px]">{p.title.slice(0, 23)}{p.title.length > 23 && <span>....</span>}</h4>
+                      <p className="text-xs text-gray-500 mt-1">{p.stockCount > 0 ? (<span className="text-[Green]">Stock In</span>) :( <span className="text-[red]">Sold Out</span>)} <span className="font-medium text-gray-700">{p.vendor}</span></p>
                     </div>
                     <div className="text-right">
                       <div className="font-bold">${p.price}</div>
-                      <div className="text-xs text-gray-500">Free returns</div>
+                      <div className="text-xs text-gray-500">{p.category.slice(0, 15)}</div>
                     </div>
                   </div>
                 </div>
               </div>
-            </Link>
+
           ))}
         </div>
       </section>

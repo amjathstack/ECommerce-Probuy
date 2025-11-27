@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { auth } from "@/firebase";
 
 const URL = "http://localhost:3000/api/products/cart";
 

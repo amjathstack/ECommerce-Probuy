@@ -1,6 +1,8 @@
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import leave_icon from '../../public/icons/leave.svg';
 
 
 export default function DashboardMenu() {
@@ -71,10 +73,10 @@ export default function DashboardMenu() {
                     </a>
                     <a onClick={() => handleSettings()} className={
                         page === 'settings'
-                            ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
-                            : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
+                            ? "flex gap-1 block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
+                            : "flex gap-1 block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                     }>
-                        ⚙️ Back to Site
+                        <Image width={22} src={leave_icon} alt='leave_icon' /> Back to Site
                     </a>
                 </nav>
 

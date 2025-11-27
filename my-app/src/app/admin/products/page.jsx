@@ -16,11 +16,10 @@ export default function AdminProducts() {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    console.log(products)
   }, []);
 
   return (
-    <div className="w-[85%] bg-gray-50 p-10 ml-[15%]">
+    <div className="w-full md:w-[85%] bg-gray-50 p-10 md:ml-[15%]">
       
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-800">Products</h2>

@@ -5,6 +5,7 @@ import { store } from "@/app/store";
 import { Provider } from "react-redux";
 import { AuthProvider } from "@/context/authContext";
 import { ToastContainer } from "react-toastify";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,15 +20,18 @@ const geistMono = Geist_Mono({
 export default function RootLayout({ children }) {
 
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ToastContainer/>
-        <AuthProvider>
-          <Provider store={store}>
-            {children}
-          </Provider>
-        </AuthProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <ToastContainer />
+          <AuthProvider>
+            <Provider store={store}>
+              {children}
+            </Provider>
+          </AuthProvider>
+        </body>
+      </html>
+    </ClerkProvider>
+
   );
 }
