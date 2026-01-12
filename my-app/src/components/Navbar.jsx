@@ -1,10 +1,12 @@
 'use client'
-import React from "react"
-import {  useSelector } from "react-redux"
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import cart_icon from '../../public/icons/cart.svg'
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useClerk, UserButton, useUser } from "@clerk/nextjs"
+import { openLoginCard } from "@/features/components/componentsSlice";
+import { useSession } from "next-auth/react";
+import ProfileMenu from "./ProfileMenu";
 
 
 
@@ -12,15 +14,16 @@ export default function Navbar() {
 
     const { cartItems } = useSelector((state) => state.cart);
     const router = useRouter();
-    const { user } = useUser();
-    const { openSignIn } = useClerk()
+    const { data: session } = useSession();
+    const dispatch = useDispatch();
+    const [openMenu, setOpenMenu] = useState(false);
 
     return (
-        <header className="flex items-center sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm justify-center">
+        <header className="flex relative items-center sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm justify-center">
             <div className="w-[90%] flex items-center justify-between h-16">
 
                 <div className="flex items-center gap-4">
-                    <div onClick={() => router.push('/')} className="text-3xl font-extrabold tracking-tight cursor-pointer">Probuy</div>
+                    <div onClick={() => router.push('/')} className="text-2xl cursor-pointer">Probuy</div>
                 </div>
 
                 <div className="hidden sm:flex mx-6 gap-[20px]">
@@ -41,29 +44,41 @@ export default function Navbar() {
 
                 <div className="flex items-center gap-6">
 
-                    {/* {user?.isSeller &&
+                    {session?.user?.isSeller &&
                         <button
                             onClick={() => router.push('/admin')}
                             className="hidden md:flex py-1 px-4 bg-gray-200 text-[13px] rounded-full cursor-pointer">
                             Dashboard
                         </button>
-                    } */}
+                    }
 
-                    <button onClick={() => router.push('/public/cart')} className="cursor-pointer relative inline-flex items-center rounded-md text-white">
+                    <button onClick={() => router.push('/cart')} className="cursor-pointer relative inline-flex items-center rounded-md text-white">
                         <Image className="w-[28px]" src={cart_icon} alt="cart_icon" />
                         {cartItems?.length > 0 &&
                             <div className="absolute rounded-full flex items-center justify-center w-[10px] h-[10px] bg-[red] top-[1px] right-[-1px]"></div>
                         }
                     </button>
 
-                    {user
-                        ? <UserButton>
-                         </UserButton>
-                        : <button onClick={openSignIn} className="border border-gray w-[120px] h-[40px]  sm:inline-flex items-center justify-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Sign in</button>
+                    {session
+                        ? <div onClick={() => setOpenMenu(true)} className="rounded-full overflow-hidden">
+                            {
+                                session?.user?.profileImage
+                                    ? <img src={session.user.profileImage} className="w-7 h-7" alt="profile" />
+                                    : <div className="w-7 h-7 bg-black" ></div>
+                            }
+
+                        </div>
+                        : <button onClick={() => dispatch(openLoginCard())} className="border border-gray w-[120px] h-[40px]  sm:inline-flex items-center justify-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Sign in</button>
                     }
 
                 </div>
             </div>
+
+            {
+                openMenu &&
+                <ProfileMenu name={session?.user?.name} profileMenuStatus={openMenu} onClose={setOpenMenu} />
+            }
+
         </header>
     )
 }

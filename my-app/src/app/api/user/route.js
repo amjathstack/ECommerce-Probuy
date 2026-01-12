@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../config/connectDB";
 import userModel from "../../../../models/User";
-import authenticate from "../../../../middleware/authenticate";
+import { hash } from "bcrypt";
 
 export async function GET(req) {
 
@@ -20,18 +20,18 @@ export async function GET(req) {
 
 }
 
-export async function POST(req) {
-
+export async function POST(request) {
     try {
 
-        const body = await req.formData();
-        const name = body.get('name');
-        const email = body.get('email');
-        const firebaseUid = body.get('firebaseUid');
+        const formData = await request.formData();
+        const data = Object.fromEntries(formData.entries());
+        const password = data.password;
+        let hashedPassword = await hash(password, 10);
 
         await connectDB();
-        await userModel.create({ firebaseUid, name, email });
-        return NextResponse.json({ status: true, message: 'User created successfully' });
+        await userModel.create({ ...data, password: hashedPassword });
+
+        return NextResponse.json({ status: true, message: 'User account created successfully!' });
 
     } catch (error) {
 

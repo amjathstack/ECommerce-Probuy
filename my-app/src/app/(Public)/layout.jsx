@@ -8,17 +8,23 @@ import { fetchAddress } from "@/features/address/addressSlice";
 
 import { fetchProducts } from "@/features/products/productSlice";
 import { fetchOrders } from "@/features/order/orderSlice";
+import LoginCard from "@/components/LoginCard";
+import SignUpCard from "@/components/SignUpCard";
+import { useSession } from "next-auth/react";
+import CreateStoreForm from "@/components/CreateStoreForm";
 
 export default function PublicLayout({ children }) {
 
-    const { loginCardStatus, signUpCardStatus, userProfileStatus } = useSelector((state) => state.components);
+    const { loginCardStatus, signUpCardStatus, createStoreFormStatus } = useSelector((state) => state.components);
     const dispatch = useDispatch();
+    const { data:session } = useSession();
 
-    // useEffect(() => {
-    //     if (user?._id) {
-    //         dispatch(fetchCart())
-    //     }
-    // }, [user?._id])
+
+    useEffect(() => {
+        if (session) {
+            dispatch(fetchCart())
+        }
+    }, [session])
 
     // useEffect(() => {
     //     dispatch(fetchAddress(token))
@@ -36,6 +42,9 @@ export default function PublicLayout({ children }) {
 
     return (
         <>
+            {loginCardStatus && <LoginCard />}
+            {signUpCardStatus && <SignUpCard />}
+            { createStoreFormStatus && <CreateStoreForm/> }
             <Navbar />
             {children}
             <Footer />

@@ -6,13 +6,7 @@ const URL = "http://localhost:3000/api/products/cart";
 
 export const fetchCart = createAsyncThunk("cart/fetchCart", async (thunkAPI) => {
   try {
-    const token = await auth.currentUser.getIdToken();
-    const response = await axios.get(`${URL}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
-    });
+    const response = await axios.get(`${URL}`);
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");
@@ -22,8 +16,7 @@ export const fetchCart = createAsyncThunk("cart/fetchCart", async (thunkAPI) => 
 
 export const addToCart = createAsyncThunk("cart/addToCart", async (product, thunkAPI) => {
   try {
-    const token = await auth.currentUser.getIdToken();
-    const response = await axios.post(URL, product, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    const response = await axios.post(URL, product);
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to add item");
@@ -36,8 +29,7 @@ export const removeFromCart = createAsyncThunk(
   async ({ productId }, thunkAPI) => {
     try {
 
-      const token = await auth.currentUser.getIdToken();
-      await axios.delete(URL, { data: { productId }, headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` } });
+      await axios.delete(URL, { data: { productId }, headers: { "Content-Type": "application/json" } });
       return productId;
 
     } catch (err) {
@@ -53,9 +45,8 @@ export const updateCart = createAsyncThunk(
   "cart/updateCart",
   async (_, thunkAPI) => {
     try {
-      const token = await auth.currentUser.getIdToken();
       const { cartItems } = thunkAPI.getState().cart;
-      const response = await axios.put(URL, { cartData: cartItems }, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } })
+      const response = await axios.put(URL, { cartData: cartItems }, { headers: { 'Content-Type': 'application/json' } })
       return response.data.message
     } catch (error) {
 
@@ -68,7 +59,7 @@ export const updateCart = createAsyncThunk(
 export const clearCart = createAsyncThunk("cart/clearCart", async (_, thunkAPI) => {
   try {
     const token = await auth.currentUser?.getIdToken();
-    const response = await axios.put(`http://localhost:3000/api/products`,{}, { headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` } });
+    const response = await axios.put(`http://localhost:3000/api/products`, {}, { headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` } });
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");

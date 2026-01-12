@@ -5,6 +5,7 @@ const initialState = {
     signUpCardStatus: false,
     profileMenuStatus: false,
     userProfileStatus: false,
+    createStoreFormStatus: false
 }
 
 const componentsSlice = createSlice({
@@ -41,6 +42,15 @@ const componentsSlice = createSlice({
             state.userProfileStatus = false
         },
 
+        openCreateStoreForm: (state) => {
+            state.createStoreFormStatus = true
+            state.signUpCardStatus = false
+            state.loginCardStatus = false
+        },
+        closeCreateStoreForm: (state) => {
+            state.createStoreFormStatus = false
+        },
+
 
     }
 });
@@ -52,7 +62,9 @@ export const { openLoginCard,
     openSignUpCard,
     closeSignUpCard,
     openUserProfile,
-    closeUserProfile
+    closeUserProfile,
+    openCreateStoreForm,
+    closeCreateStoreForm
 } = componentsSlice.actions;
 
 export default componentsSlice.reducer;

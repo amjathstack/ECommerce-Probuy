@@ -10,3 +10,7 @@
   margin: 0px;
   font-family: Outfit;
 }
+
+.body-no-scroll{
+  overflow-y: hidden;
+}

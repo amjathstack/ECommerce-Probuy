@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/features/products/productSlice";
 import { addToCart, addToCartItems } from "@/features/cart/cartSlice";
 import user_icon from '../../../../../public/icons/user.svg'
-import { addComment, addToComment, clearCommentList, fetchComments } from "@/features/comments/commentSlice";
 import RatingStar from "@/components/RatingStar";
 import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 
 export default function ProductView({ params }) {
@@ -19,43 +20,72 @@ export default function ProductView({ params }) {
   const id = resolvedParams?.id
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.cart);
-  const { commentList = [] } = useSelector((state) => state.comment);
-  const totalRating = commentList.length && commentList.reduce((sum, c) => sum + c.rating, 0);
-  const totalComment = commentList.length;
   const [rating, setRating] = useState(0);
 
+  const { data: session } = useSession();
 
   const { products } = useSelector((state) => state.products)
 
   const product = products.find((item) => item._id === id);
   const [mainImage, setMainImage] = useState(product?.image[0]);
-  const existItemInCart = cartItems?.find((i) => i.productId === product?._id)
+  const existItemInCart = cartItems?.find((i) => i.productId === product?._id);
+
+  const [commentList, setCommentList] = useState([]);
 
   const [quantity, setQuantity] = useState(1);
   const [comment, setComment] = useState("");
 
-  const handleAddComment = (e) => {
+  async function fetchComments() {
+    try {
+
+      const response = await axios.get(`/api/comments?productId=${product?._id}`);
+      if (response.data.status && response.data.message) {
+        setCommentList(response.data.message);
+      }
+
+    } catch (error) {
+
+    }
+  }
+
+  const handleAddComment = async (e) => {
     e.preventDefault();
+
+    if (!session) {
+      toast.warning("Please login to add comments");
+    }
+
     if (rating <= 0) {
-      return toast.error('Please select the star rating!')
+      return toast.error('Please select the star rating!');
     }
 
     const formData = new FormData();
     formData.append('productId', product?._id);
-    formData.append('userId', user?._id);
+    formData.append('userId', session?.user?.id);
     formData.append('rating', rating);
     formData.append('comment', comment);
 
-    dispatch(addToComment({ formData }));
-    dispatch(addComment({ comment, productId: product?._id, rating, userId: { _id: user?._id, name: user?.name, profileImage: user?.profileImage } }));
+    const response = await axios.post("/api/comments", formData);
+
+    if (response.data.status && response.data.message) {
+      setComment(setCommentList(response.data.message))
+    } else {
+      return toast.error(response.data.message)
+    }
+
     setRating(0);
     setComment('')
   };
 
-  const handleAddToCart = () => {
-    if (!user?._id) {
-      alert("Please log in to add items to your cart");
+
+  const handleCartBuy = (k) => {
+    if (!session) {
+      toast.warning("Please log in to use the cart");
       return;
+    }
+
+    if (k == "B") {
+      router.push('/cart')
     }
 
     const formData = new FormData();
@@ -72,16 +102,15 @@ export default function ProductView({ params }) {
 
   const back = () => {
     router.push('/');
-    dispatch(clearCommentList());
   }
 
   useEffect(() => {
     dispatch(fetchProducts())
   }, [])
 
-  // useEffect(() => {
-  //   dispatch(fetchComments({ productId: product?._id }));
-  // }, [dispatch, product?._id]);
+  useEffect(() => {
+    fetchComments({ productId: product?._id });
+  }, [product?._id]);
 
   useEffect(() => {
     setMainImage(product?.image[0]);
@@ -126,7 +155,7 @@ export default function ProductView({ params }) {
 
           <div>
             <h1 className="text-3xl font-bold text-gray-800">{product?.title}</h1>
-            <p className="mt-2 text-sm text-gray-500">⭐/ {(totalRating / totalComment).toFixed(2)}</p>
+            {/* <p className="mt-2 text-sm text-gray-500">⭐/ {(totalRating / totalComment).toFixed(2)}</p> */}
 
             <div className="mt-4 text-2xl font-semibold text-indigo-600">
               ${product?.price.toFixed(2)}
@@ -157,10 +186,10 @@ export default function ProductView({ params }) {
 
             {!existItemInCart ?
               <div className="mt-6 flex gap-3">
-                <button onClick={() => handleAddToCart()} className="flex-1 rounded-full bg-indigo-600 text-white py-3 font-medium hover:bg-indigo-700">
+                <button onClick={() => handleCartBuy("C")} className="flex-1 rounded-full bg-indigo-600 text-white py-3 font-medium hover:bg-indigo-700">
                   Add to Cart
                 </button>
-                <button className="flex-1 rounded-full border border-indigo-600 text-indigo-600 py-3 font-medium hover:bg-indigo-50">
+                <button onClick={() => handleCartBuy("B")} className="flex-1 rounded-full border border-indigo-600 text-indigo-600 py-3 font-medium hover:bg-indigo-50">
                   Buy Now
                 </button>
               </div>
@@ -175,15 +204,15 @@ export default function ProductView({ params }) {
         </div>
 
 
-        <div className="mt-10 border-t pt-6">
+        <div className="md:w-[50%] mt-10 border-t border-gray-300 pt-6">
           <h2 className="text-lg font-semibold text-gray-800">Customer Reviews</h2>
 
           <div className="mt-4 space-y-4">
-            {Array.isArray(commentList) && commentList?.map((c, i) => (
+            {Array.isArray(commentList) && commentList.length > 0 && commentList?.map((c, i) => (
               <div key={i} className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-100 w-full lg:w-[50%]">
                 <div className="flex gap-2 items-center">
                   <Image src={c.userId.profileImage || user_icon} width={10} height={10} className="w-6 border border-gray-300 rounded-full" alt="profile-image" />
-                  <p className="text-[13px] text-gray-800">{c.userId._id === user?._id ? "You" : c.userId.name}</p>
+                  <p className="text-[13px] text-gray-800">{c.userId._id === session?.user?.id ? "You" : c.userId.name}</p>
                 </div>
 
                 <p className="text-gray-600 text-sm mt-1">{c.comment}</p>
