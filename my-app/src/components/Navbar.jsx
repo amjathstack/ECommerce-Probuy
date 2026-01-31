@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import cart_icon from '../../public/icons/cart.svg'
 import Image from "next/image";
@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { openLoginCard } from "@/features/components/componentsSlice";
 import { useSession } from "next-auth/react";
 import ProfileMenu from "./ProfileMenu";
+import profile from "../../public/icons/profile.jpg";
 
 
 
@@ -46,8 +47,8 @@ export default function Navbar() {
 
                     {session?.user?.isSeller &&
                         <button
-                            onClick={() => router.push('/admin')}
-                            className="hidden md:flex py-1 px-4 bg-gray-200 text-[13px] rounded-full cursor-pointer">
+                            onClick={() => router.push('/vendor')}
+                            className="md:flex py-1 px-4 bg-gray-200 text-[13px] rounded-full cursor-pointer">
                             Dashboard
                         </button>
                     }
@@ -63,8 +64,8 @@ export default function Navbar() {
                         ? <div onClick={() => setOpenMenu(true)} className="rounded-full overflow-hidden">
                             {
                                 session?.user?.profileImage
-                                    ? <img src={session.user.profileImage} className="w-7 h-7" alt="profile" />
-                                    : <div className="w-7 h-7 bg-black" ></div>
+                                    ? <img src={session.user.profileImage} className="w-8 h-8 cursor-pointer" alt="profile" />
+                                    : <Image src={profile} className="w-8 h-8 cursor-pointer" width={1000} height={1000} alt="profile" />
                             }
 
                         </div>
@@ -76,7 +77,7 @@ export default function Navbar() {
 
             {
                 openMenu &&
-                <ProfileMenu name={session?.user?.name} profileMenuStatus={openMenu} onClose={setOpenMenu} />
+                <ProfileMenu name={session?.user?.name} profileMenuStatus={openMenu} isSeller={session?.user?.isSeller} onClose={setOpenMenu} />
             }
 
         </header>

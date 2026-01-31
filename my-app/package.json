@@ -9,8 +9,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.35.5",
-    "@google/genai": "^1.30.0",
-    "@google/generative-ai": "^0.24.1",
+    "@google/genai": "^1.38.0",
     "@material-tailwind/react": "^2.1.10",
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",

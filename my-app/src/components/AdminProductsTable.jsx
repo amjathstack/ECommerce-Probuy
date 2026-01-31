@@ -1,13 +1,15 @@
 "use client";
 import { deleteProduct } from "@/features/products/productSlice";
-import { auth } from "@/firebase";
 import { Edit, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
+import EditProductModal from "./EditProductsModel";
 
 export default function AdminProductsTable({ products }) {
 
+  const [showEditTable, setShowEditTable] = useState(false);
+
   const dispatch = useDispatch();
-  const token = auth.currentUser?.accessToken;
 
   return (
     <div className="overflow-x-auto bg-white shadow">
@@ -22,7 +24,7 @@ export default function AdminProductsTable({ products }) {
           </tr>
         </thead>
         <tbody>
-          {products.length > 0 ? (
+          {products && products.length > 0 ? (
             products.map((p) => (
               <tr
                 key={p._id}
@@ -33,10 +35,13 @@ export default function AdminProductsTable({ products }) {
                 <td className="px-6 py-4">${p.price}</td>
                 <td className="px-6 py-4">{p.stockCount}</td>
                 <td className="px-6 py-4 text-right">
-                  <button className="text-indigo-600 hover:text-indigo-800 mr-3">
+                  <button
+                    onClick={() => setShowEditTable(p)}
+                    className="text-indigo-600 hover:text-indigo-800 mr-3"
+                  >
                     <Edit size={18} />
                   </button>
-                  <button onClick={() => dispatch(deleteProduct({productId:p._id, token}))} className="text-red-500 hover:text-red-700">
+                  <button onClick={() => dispatch(deleteProduct({ productId: p._id }))} className="text-red-500 hover:text-red-700">
                     <Trash2 size={18} />
                   </button>
                 </td>
@@ -51,6 +56,7 @@ export default function AdminProductsTable({ products }) {
           )}
         </tbody>
       </table>
+      {showEditTable && <EditProductModal onClose={setShowEditTable} data={showEditTable}/>}
     </div>
   );
 }

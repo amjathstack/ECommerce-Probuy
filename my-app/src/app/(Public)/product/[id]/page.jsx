@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/features/products/productSlice";
 import { addToCart, addToCartItems } from "@/features/cart/cartSlice";
-import user_icon from '../../../../../public/icons/user.svg'
+import profile from "../../../../../public/icons/profile.jpg";
 import RatingStar from "@/components/RatingStar";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
@@ -211,11 +211,11 @@ export default function ProductView({ params }) {
             {Array.isArray(commentList) && commentList.length > 0 && commentList?.map((c, i) => (
               <div key={i} className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-100 w-full lg:w-[50%]">
                 <div className="flex gap-2 items-center">
-                  <Image src={c.userId.profileImage || user_icon} width={10} height={10} className="w-6 border border-gray-300 rounded-full" alt="profile-image" />
-                  <p className="text-[13px] text-gray-800">{c.userId._id === session?.user?.id ? "You" : c.userId.name}</p>
+                  <Image src={c?.userId?.profileImage || profile} width={10} height={10} className="w-6 border border-gray-300 rounded-full" alt="profile-image" />
+                  <p className="text-[13px] text-gray-800">{c?.userId?._id === session?.user?.id ? "You" : c?.userId?.name}</p>
                 </div>
 
-                <p className="text-gray-600 text-sm mt-1">{c.comment}</p>
+                <p className="text-gray-600 text-sm mt-1">{c?.comment}</p>
               </div>
             ))}
           </div>

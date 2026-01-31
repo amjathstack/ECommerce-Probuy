@@ -1,7 +1,9 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import storesModel from "../../../../models/Store";
-import NextResponse from "next/server";
+import userModel from "../../../../models/User";
+import cloudinary from "cloudinary";
+import { NextResponse } from "next/server";
 
 
 
@@ -14,7 +16,7 @@ cloudinary.config({
 export async function POST(req) {
     try {
 
-        const body = await req.json();
+        const body = await req.formData();
 
         const session = await getServerSession(authOptions);
 
@@ -27,15 +29,15 @@ export async function POST(req) {
         const image = body.get("image");
 
         const isFile =
-            profileImage &&
-            typeof profileImage === "object" &&
-            typeof profileImage.arrayBuffer === "function" &&
-            profileImage.size > 0;
+            image &&
+            typeof image === "object" &&
+            typeof image.arrayBuffer === "function" &&
+            image.size > 0;
 
         let updatedProfile = '';
 
         if (isFile) {
-            const bytes = await profileImage.arrayBuffer();
+            const bytes = await image.arrayBuffer();
             const buffer = Buffer.from(bytes);
 
             const result = await cloudinary.uploader.upload(`data:image/png;base64,${buffer.toString("base64")}`, {
@@ -45,6 +47,8 @@ export async function POST(req) {
             updatedProfile = result.secure_url;
         }
 
+        await userModel.updateOne({ _id: session?.user?.id }, { $set: { isSeller: true } });
+
         const response = await storesModel.create({
             userId: session?.user?.id,
             title,
@@ -52,9 +56,12 @@ export async function POST(req) {
             image: updatedProfile
         })
 
+        return NextResponse.json({ status: true, message: response });
 
 
     } catch (error) {
+
+        return NextResponse.json({ status: false, message: error.message });
 
     }
 }

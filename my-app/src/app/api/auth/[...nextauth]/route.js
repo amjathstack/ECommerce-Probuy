@@ -92,10 +92,19 @@ export const authOptions = {
 
 
             if (trigger === "update" && session?.user) {
-                token.name = session.user.name;
-                token.profileImage = session.user.profileImage;
-                token.isSeller = session.user.isSeller;
+                if (session.user.name !== undefined) {
+                    token.name = session.user.name;
+                }
+
+                if (session.user.profileImage !== undefined) {
+                    token.profileImage = session.user.profileImage;
+                }
+
+                if (session.user.isSeller !== undefined) {
+                    token.isSeller = session.user.isSeller;
+                }
             }
+
 
             return token;
         }

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../../config/connectDB";
 import ordersModel from "../../../../../models/Order";
-import authenticate from "../../../../../middleware/authenticate";
 
 export async function GET(req) {
 

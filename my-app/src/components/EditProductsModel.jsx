@@ -4,11 +4,11 @@ import upload_icon from '../../public/icons/upload_icon.svg'
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, clearProductDetails, fetchProductTitle } from "@/features/products/productSlice";
+import { addProduct, clearProductDetails, editProduct, fetchProductTitle } from "@/features/products/productSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function AddProductModal({ onClose, setProducts }) {
+export default function EditProductModal({ onClose, data }) {
 
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.products);
@@ -17,13 +17,13 @@ export default function AddProductModal({ onClose, setProducts }) {
 
     const fileInputUseRef1 = useRef(null);
 
-    const [files, setFiles] = useState([]);
-    const [previewUrls, setPreviewUrls] = useState([]);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const [category, setCategory] = useState('');
-    const [stockCount, setStockCount] = useState('');
+    const [files, setFiles] = useState(data.image || []);
+    const [previewUrls, setPreviewUrls] = useState(data.image || []);
+    const [title, setTitle] = useState(data.title || "");
+    const [description, setDescription] = useState(data.description || "");
+    const [price, setPrice] = useState(data.price || "");
+    const [category, setCategory] = useState(data.category || "");
+    const [stockCount, setStockCount] = useState(data.stockCount || "");
     const [firstFiletracker, setFirstFiletracker,] = useState(true)
 
     const fileInputChange1 = async (file) => {
@@ -53,6 +53,7 @@ export default function AddProductModal({ onClose, setProducts }) {
         e.preventDefault();
         const formData = new FormData;
 
+        formData.append('productId', data._id);
         formData.append('title', title);
         formData.append('description', description);
         formData.append('price', price);
@@ -61,7 +62,7 @@ export default function AddProductModal({ onClose, setProducts }) {
 
         files.forEach((file) => formData.append('image', file));
 
-        dispatch(addProduct({ formData }));
+        dispatch(editProduct({ formData }));
         dispatch(clearProductDetails());
         setFormEnded(true);
     }
@@ -78,6 +79,14 @@ export default function AddProductModal({ onClose, setProducts }) {
         }
 
     }, [formEnded, loading]);
+
+    useEffect(() => {
+
+        if (!loading && formEnded) {
+            onClose(false)
+        }
+
+    }, [loading, formEnded])
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 py-20 overflow-scroll-y">

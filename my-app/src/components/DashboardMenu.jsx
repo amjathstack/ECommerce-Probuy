@@ -12,26 +12,26 @@ export default function DashboardMenu() {
     const [page, setPage] = useState('dashboard');
 
     const handleDashboard = () => {
-        setPage('/admin')
-        router.push('/admin')
+        setPage('/vendor')
+        router.push('/vendor')
     }
 
     const handleProducts = () => {
-        setPage('/admin/products')
-        router.push('/admin/products')
+        setPage('/vendor/products')
+        router.push('/vendor/products')
     }
 
     const handleOrders = () => {
-        setPage('/admin/order')
-        router.push('/admin/order')
+        setPage('/vendor/order')
+        router.push('/vendor/order')
     }
 
     const handleReviews = () => {
-        router.push('/admin/Orders')
+        router.push('/vendor/Orders')
     }
 
     const handleSettings = () => {
-        router.push('/public')
+        router.push('/')
     }
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function DashboardMenu() {
                     <a
                         onClick={() => handleDashboard()}
                         className={
-                            page === '/admin'
+                            page === '/vendor'
                                 ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                                 : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                         }>
@@ -57,7 +57,7 @@ export default function DashboardMenu() {
                     </a>
                     <a onClick={() => handleProducts()}
                         className={
-                            page === '/admin/products'
+                            page === '/vendor/products'
                                 ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                                 : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                         }>
@@ -65,7 +65,7 @@ export default function DashboardMenu() {
                     </a>
                     <a onClick={() => handleOrders()}
                         className={
-                            page === '/admin/order'
+                            page === '/vendor/order'
                                 ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                                 : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                         }>

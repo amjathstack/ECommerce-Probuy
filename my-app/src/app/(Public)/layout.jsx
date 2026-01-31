@@ -40,6 +40,10 @@ export default function PublicLayout({ children }) {
     //     }
     // }, [dispatch, token]);
 
+    useEffect(() => {
+        console.log(session)
+    }, [session])
+
     return (
         <>
             {loginCardStatus && <LoginCard />}

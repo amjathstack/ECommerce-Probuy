@@ -4,7 +4,7 @@ import "./globals.css";
 import { store } from "@/app/store";
 import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider} from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,6 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export default function RootLayout({ children }) {
+
+
 
   return (
 

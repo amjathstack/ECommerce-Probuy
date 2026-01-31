@@ -3,11 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
+import placeHolder from "../../public/placeholder.png";
 
 import {
     closeCreateStoreForm,
 } from "@/features/components/componentsSlice";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 function CreateStoreForm() {
     const [name, setName] = useState("");
@@ -17,9 +19,9 @@ function CreateStoreForm() {
     const [loading, setLoading] = useState(false);
     const fileRef = useRef(null);
 
-    const router = useRouter()
     const dispatch = useDispatch();
     const { createStoreFormStatus } = useSelector((state) => state.components);
+    const { data: session, update } = useSession();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,18 +41,32 @@ function CreateStoreForm() {
 
             const response = await axios.post("/api/store", formData);
 
-            if (response.data.message) {
-                router
-                return dispatch(closeCreateStoreForm());
-            }
+            if (response.data.status && response.data.message) {
 
+                update({
+                    user: {
+                        isSeller: true
+                    }
+                })
+
+                dispatch(closeCreateStoreForm());
+
+                console.log("Store created")
+
+
+                return toast.success("Store is created!")
+            }
+            console.log("End")
             return toast.error(response.data.message)
 
         } catch (error) {
+
             console.log(error.message)
-            toast.error("Signup failed. Please try again.");
+
         } finally {
+
             setLoading(false);
+
         }
     };
 
@@ -108,10 +124,10 @@ function CreateStoreForm() {
                         <img
                             src={
                                 preview ||
-                                "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200"
+                                placeHolder.src
                             }
                             alt="Profile Avatar"
-                            className="w-30 h-30 rounded-full border border-gray-200 my-2 cursor-pointer"
+                            className="w-30 h-30 rounded-full border border-gray-200 my-4 cursor-pointer"
                             onClick={() => fileRef.current.click()}
                         />
                     </div>

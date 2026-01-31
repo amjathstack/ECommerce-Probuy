@@ -1,24 +1,35 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 
-export const runtime = "nodejs"; 
+export const runtime = "nodejs";
 
 export async function POST(req) {
   try {
-    const form = await req.formData();
+    const formData = await req.formData();
+    const image = formData.get("image");
+    const prompt =
+      formData.get("prompt") ??
+      "Give one title (8 words) and one description (35 words). Do not add anything else.";
 
-    const image = form.get("image");
-    const prompt = form.get("prompt") || "Give me a one title and description only don't generate anything Note:Title should contain 8 words description should contain 35 words, Don't Generate any other words or letter";
+    if (!image || typeof image === "string") {
+      return NextResponse.json(
+        { success: false, error: "Invalid image file" },
+        { status: 400 }
+      );
+    }
 
-  
-    const bytes = Buffer.from(await image.arrayBuffer());
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY missing");
+    }
+
+    const buffer = Buffer.from(await image.arrayBuffer());
 
     const ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY, 
+      apiKey: process.env.GEMINI_API_KEY,
     });
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite-preview-02-05",
+    const result = await ai.models.generateContent({
+      model: "gemini-3-pro-image-preview", // ✅ CORRECT
       contents: [
         {
           role: "user",
@@ -26,8 +37,8 @@ export async function POST(req) {
             { text: prompt },
             {
               inlineData: {
-                mimeType: image.type, 
-                data: bytes.toString("base64"),
+                mimeType: image.type,
+                data: buffer.toString("base64"),
               },
             },
           ],
@@ -35,11 +46,18 @@ export async function POST(req) {
       ],
     });
 
-    return NextResponse.json({ 
-      status:true, message: response.text
-    });
+    const text =
+      result.response.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
+    return NextResponse.json({
+      success: true,
+      data: text,
+    });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("API ERROR:", error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
 }

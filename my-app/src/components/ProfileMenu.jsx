@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import { useDispatch } from "react-redux";
 
 
-export default function ProfileMenu({ name, profileMenuStatus, onClose }) {
+export default function ProfileMenu({ name, profileMenuStatus, isSeller, onClose }) {
 
     const router = useRouter();
     const popupRef = useRef(null);
@@ -53,10 +53,14 @@ export default function ProfileMenu({ name, profileMenuStatus, onClose }) {
                     router.push('/order');
                     onClose(false);
                 }} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">My Orders</li>
-                <li onClick={() => {
-                    dispatch(openCreateStoreForm())
-                    onClose(false)
-                }} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">Create Store</li>
+                {
+                    !isSeller &&
+                    <li onClick={() => {
+                        dispatch(openCreateStoreForm())
+                        onClose(false)
+                    }} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">Create Store</li>
+                }
+
                 <li onClick={() => handleLogout()} className="w-full hover:bg-gray-100 px-3 py-1 text-[15px] text-gray-800 cursor-pointer">Logout</li>
             </ul>
         </div>

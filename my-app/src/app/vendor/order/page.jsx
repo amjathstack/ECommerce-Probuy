@@ -4,19 +4,17 @@ import { Eye, Truck, CheckCircle, Clock, XCircle } from "lucide-react";
 import { format } from 'date-fns';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrders } from "@/features/order/orderSlice";
-import { auth } from "@/firebase";
 
 export default function AdminOrdersList() {
 
 
     const { allOrderItems = [] } = useSelector((state) => state.orders);
     const dispatch = useDispatch();
-    const token = auth.currentUser?.accessToken || "";
 
 
     useEffect(() => {
-        dispatch(fetchAllOrders(token))
-    }, [dispatch, token]);
+        dispatch(fetchAllOrders())
+    }, [dispatch,]);
 
     const StatusBadge = ({ status }) => {
         const colors = {

@@ -4,23 +4,26 @@ import { Plus } from "lucide-react";
 import AdminProductsTable from "@/components/AdminProductsTable";
 import AddProductModal from "@/components/AddProductsModel";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "@/features/products/productSlice";
+import { fetchVendorProducts } from "@/features/products/productSlice";
 import productDeleteConfirm from "@/components/productDeleteConfirm";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 export default function AdminProducts() {
+
   const [showModal, setShowModal] = useState(false);
+
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.products)
-  
+  const { vendorProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchVendorProducts());
   }, []);
 
   return (
     <div className="w-full md:w-[85%] bg-gray-50 p-10 md:ml-[15%]">
-      
+
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-800">Products</h2>
         <button
@@ -31,9 +34,9 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      <AdminProductsTable products={products} />
-      {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
-  
+      <AdminProductsTable products={vendorProducts} />
+      {showModal && <AddProductModal onClose={() => setShowModal(false)}/>}
+
     </div>
   );
 }
