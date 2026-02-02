@@ -1,10 +1,13 @@
 "use client";
-import { addAddress, addToAddress } from "@/features/address/addressSlice";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { authUser } from "@/context/authContext";
+import axios from "axios";
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-export default function AddAddressCard({ onClose }) {
+export default function AddAddressCard({ onClose, fetchAddresses }) {
+
+    const [loading, setLoading] = useState(false);
+    const [formClose, setFormClose] = useState(false);
 
     const [form, setForm] = useState({
         fullName: "",
@@ -15,32 +18,63 @@ export default function AddAddressCard({ onClose }) {
         province: "",
         postalCode: "",
     });
-    const { user } = authUser()
-    const dispatch = useDispatch();
 
     const handleChange = (e) => {
+
         setForm({
             ...form,
             [e.target.name]: e.target.value,
         });
+
     };
 
-    const handleSubmit = (e) => {
-        const dataToSend = { ...form, userId: user?._id }
+    const handleSubmit = async (e) => {
+
         e.preventDefault();
-        dispatch(addAddress(form));
-        dispatch(addToAddress(dataToSend));
-        onClose(false);
+
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append("name", form.fullName);
+        formData.append("phoneNumber", form.phoneNumber);
+        formData.append("strAddress1", form.streetAddress1);
+        formData.append("strAddress2", form.streetAddress2);
+        formData.append("city", form.city);
+        formData.append("province", form.province);
+        formData.append("postalCode", form.postalCode);
+
+        const response = await axios.post('/api/user/address', formData);
+
+        if (response.data.status && response.data.message) {
+            toast.success("Address saved!");
+            setLoading(false);
+            setFormClose(true);
+            fetchAddresses();
+            return
+        }
+
+        setLoading(false);
+        toast.error(response.data.message)
+
     };
+
+    useEffect(() => {
+
+        if (!loading && formClose) {
+            onClose(false);
+        }
+
+    }, [loading, formClose]);
+
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="max-w-lg mx-auto bg-white shadow-lg rounded-xl p-6 w-[90%] md:w-auto">
-                <div className="flex items-center w-full justify-center">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            <div className="max-w-lg mx-auto bg-white shadow-lg rounded-xl p-6 w-[500px] md:w-auto">
+                <div className="flex mb-8 items-center w-full justify-between">
+                    <h2 className="text-xl font-semibold text-gray-800">
                         Shipping Details
                     </h2>
-                    <button onClick={() => onClose(false)}>X</button>
+                    <X onClick={() => onClose(false)} />
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -142,9 +176,10 @@ export default function AddAddressCard({ onClose }) {
 
                     <button
                         type="submit"
+                        disabled={loading}
                         className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
                     >
-                        Save Address
+                        Save Address {loading && "Loading..."}
                     </button>
                 </form>
             </div>

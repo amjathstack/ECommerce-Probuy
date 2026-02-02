@@ -14,8 +14,8 @@ import { fetchProducts } from "@/features/products/productSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.products);
-  const totalInStockCount = products.reduce((total, item) => total + item.stockCount, 0) 
+  const { vendorProducts } = useSelector((state) => state.products);
+  const totalInStockCount = vendorProducts?.reduce((total, item) => total + item?.stockCount, 0) 
   const [salesData] = useState([
     { month: "Jan", sales: 3200 },
     { month: "Feb", sales: 4100 },

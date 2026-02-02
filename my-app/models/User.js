@@ -1,13 +1,27 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const addressesSchema = new mongoose.Schema({
+
     name: { type: String, required: true },
-    email: { type: String, required: true, unique:true },
+    phoneNumber: { type: String, required: true },
+    strAddress1: { type: String, required: true },
+    strAddress2: { type: String },
+    city: { type: String, required: true },
+    province: { type: String, required: true },
+    postalCode: { type: String, required: true },
+
+})
+
+const userSchema = new mongoose.Schema({
+
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     cart: { type: Array, default: [] },
     isSeller: { type: Boolean, default: false },
     profileImage: { type: String, default: '' },
-    addresses: { type: Array, default: [] }
+    addresses: [addressesSchema],
+
 })
 
 const userModel = mongoose.models.User || mongoose.model('User', userSchema);

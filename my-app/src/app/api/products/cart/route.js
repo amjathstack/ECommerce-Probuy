@@ -11,6 +11,7 @@ export async function POST(req) {
         const session = await getServerSession(authOptions);
 
         const body = await req.formData();
+        const vendorId = body.get("vendorId");
         const productId = body.get("productId");
         const title = body.get("title");
         const image = body.get("image");
@@ -32,7 +33,7 @@ export async function POST(req) {
             return NextResponse.json({ success: true, message: user.cart });
         }
 
-        user.cart.push({ productId, title, image, price, quantity })
+        user.cart.push({ vendorId, productId, title, image, price, quantity })
         await user.save()
         return NextResponse.json({ success: true, message: user.cart });
 

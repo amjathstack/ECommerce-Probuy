@@ -94,6 +94,7 @@ export async function POST(req) {
         await connectDB();
 
         const response = await productsModel.create({
+            vendorId: session?.user?.id,
             storeId: store._id,
             title,
             price: Number(price),
@@ -162,7 +163,7 @@ export async function PUT(req) {
 
                     finalImagesArray.push(result.secure_url);
 
-                }else{
+                } else {
 
                     finalImagesArray.push(file)
 

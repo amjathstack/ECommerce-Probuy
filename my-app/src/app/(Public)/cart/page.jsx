@@ -1,20 +1,21 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, clearToCart, deleteCartItems, removeFromCart, updateCart, updateCartItems } from "@/features/cart/cartSlice";
 import AddAddressCard from "@/components/AddAddressCard";
-import { fetchAddress } from "@/features/address/addressSlice";
 import { addToOrder, addToOrderItems } from "@/features/order/orderSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function CartPage() {
 
     const dispatch = useDispatch();
     const router = useRouter();
     const { cartItems } = useSelector((state) => state.cart);
-    const { addressList } = useSelector((state) => state.address);
+
     const [addressForm, setAddressForm] = useState(false);
+    const [addressList, setAddressList] = useState(null);
 
     const [address, setAddress] = useState('Select the address');
     const [paymentMethod, setPaymentMethod] = useState('Select the payment Method');
@@ -45,13 +46,18 @@ export default function CartPage() {
 
     };
 
-    const handlePlaceOrder = () => {
+    const handlePlaceOrder = async () => {
 
         if (address === 'Select the address') {
-            return toast.warn('Please select the address!')
+
+            return toast.warn('Please select the address!');
+
         } else if (paymentMethod === 'Select the payment Method') {
-            return toast.warn('Please select the payment method!')
+
+            return toast.warn('Please select the payment method!');
+
         } else {
+
             const data = {
                 orderId: 8474775,
                 items: cartItems,
@@ -61,23 +67,57 @@ export default function CartPage() {
                 paymentStatus: 'Pending',
                 paymentMethod: paymentMethod,
                 address: address,
-                status:'Pending',
+                status: 'Pending',
                 createdAt: Date.now(),
             };
 
-            dispatch(addToOrderItems(data));
-            dispatch(addToOrder({ order: data, token }));
-            dispatch(clearCart())
-            dispatch(clearToCart());
-            router.push('/public/order')
+            const response = await axios.post('/api/order', data, { headers: { 'Content-Type': 'application/json' } });
+
+            if (response.data.message && response.data.status) {
+                dispatch(clearCart());
+                dispatch(clearToCart());
+                router.push('/order');
+                return toast.success("Order placed");
+            } else {
+                toast.error(response.data.message);
+                return console.log(response.data.message);
+            }
+
         }
 
     }
 
+    async function fetchAddresses() {
+
+        try {
+
+            const response = await axios.get('/api/user/address');
+
+            if (response.data.message && response.data.status) {
+                return setAddressList(response.data.message);
+            }
+
+            return toast.error(response.data.message);
+
+        } catch (error) {
+
+            toast.error(error.message);
+
+        }
+
+    }
+
+    useEffect(() => {
+        fetchAddresses();
+    }, [])
+
+    useEffect(() => {
+        console.log(cartItems);
+    }, [cartItems]);
 
     return (
         <div className="w-full flex justify-center">
-            {addressForm && <AddAddressCard onClose={setAddressForm} />}
+            {addressForm && <AddAddressCard onClose={setAddressForm} fetchAddresses={fetchAddresses} />}
             <div className="w-[90%] sm:mt-[80px] mt-[30px]">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">
                     Your Shopping Cart
@@ -114,7 +154,7 @@ export default function CartPage() {
                                     </div>
 
                                     <div>
-                                        <h5 className="text-left sm:text-sm text-[13px]">{item.title.length <= 5 ? item.title.slice(0, 20) : item.title.slice(0, 25)+'...' }</h5>
+                                        <h5 className="text-left sm:text-sm text-[13px]">{item.title.length <= 20 ? item.title : item.title.slice(0, 25) + '...'}</h5>
                                         <p className="text-[14px] text-gray-500">{item.description}</p>
                                     </div>
 
@@ -169,12 +209,12 @@ export default function CartPage() {
                                             return <div key={i} onClick={() => setAddress({
                                                 fullName: a.fullName,
                                                 phoneNumber: a.phoneNumber,
-                                                streetAddress1: a.streetAddress1,
-                                                streetAddress2: a.streetAddress2,
+                                                streetAddress1: a.strAddress1,
+                                                streetAddress2: a.strAddress2,
                                                 city: a.city,
                                                 province: a.province,
                                                 postalCode: a.postalCode
-                                            })} className="w-full p-2 pl-5 hover:bg-gray-300">{a.streetAddress1 + '  ' + a.streetAddress2 + '  ' + a.city}</div>
+                                            })} className="w-full p-2 pl-5 hover:bg-gray-300">{a.strAddress1 + '  ' + a.strAddress2 + '  ' + a.city}</div>
                                         })}
                                         <button onClick={() => setAddressForm(true)} className="w-full p-2 hover:bg-gray-300">+ Add Addresse</button>
                                     </div>

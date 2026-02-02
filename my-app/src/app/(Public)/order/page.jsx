@@ -1,19 +1,44 @@
 'use client'
 import OrderDetailsCard from "@/components/OrderDetailsCard";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function OrderPage() {
 
-    const { orderItems = [] } = useSelector((state) => state.orders);
-    const [ showOrderDetails, setShowOrderDetails ] = useState(false);
-    const dispatch = useDispatch();
+    const [showOrderDetails, setShowOrderDetails] = useState(false);
+    const [orders, setOrders] = useState([]);
+
+    async function fetchOrders() {
+
+        try {
+
+            const response = await axios.get('/api/order');
+
+            if (response.data.message && response.data.status) {
+                setOrders(response.data.message);
+                return
+            }
+
+            toast.error(response.data.message);
+
+        } catch (error) {
+
+            toast.error(response.data.message);
+
+        }
+
+    }
+
+    useEffect(() => {
+        fetchOrders()
+    }, [])
 
     return (
         <div className="w-full min-h-screen bg-gray-100 p-6 flex flex-col items-center">
             <h1 className="text-xl md:text-3xl font-bold mb-6">My Orders</h1>
             <div className="md:w-[80%] w-[100%] grid gap-4">
-                {Array.isArray(orderItems) ? orderItems.map((order, index) =>
+                {Array.isArray(orders) && orders.length > 0 ? orders.map((order, index) =>
                     <div
                         key={index}
                         className="bg-white p-6 rounded-md shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-4"

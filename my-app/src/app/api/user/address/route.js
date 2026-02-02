@@ -1,62 +1,80 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../../config/connectDB";
 import userModel from "../../../../../models/User";
-import authenticate from "../../../../../middleware/authenticate";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function POST(req) {
 
     try {
 
-        const uid = await authenticate(req);   
-        const body = await req.json();
-        const { 
-            fullName,
+        const session = await getServerSession(authOptions);
+
+        if (!session) {
+            return NextResponse.json({ status: false, message: "Unauthorized" });
+        }
+
+        const body = await req.formData();
+
+        const {
+            name,
             phoneNumber,
-            streetAddress1,
-            streetAddress2,
+            strAddress1,
+            strAddress2,
             city,
             province,
-            postalCode } = body;
+            postalCode } = Object.fromEntries(body.entries());
 
         await connectDB()
 
-        const user = await userModel.findOne({firebaseUid:uid});
+        const user = await userModel.findById(session?.user?.id);
 
-        if (user) {
-            user.addresses = [...user.addresses, {
-                fullName,
-                phoneNumber,
-                streetAddress1,
-                streetAddress2,
-                city,
-                province,
-                postalCode
-            }]
-
-            await user.save();
+        if (!user) {
+            return NextResponse.json({ status: false, message: "User not found" });
         }
 
-        return NextResponse.json({ status: true, message: user.addresses })
+        user.addresses.push({
+            name,
+            phoneNumber,
+            strAddress1,
+            strAddress2,
+            city,
+            province,
+            postalCode
+        });
 
+        await user.save();
+
+        return NextResponse.json({ status: true, message: user.addresses });
 
     } catch (error) {
-        return NextResponse.json({ status: false, message: error.message })
+
+        return NextResponse.json({ status: false, message: error.message });
+
     }
 }
 
 
-export async function GET(req) {
+export async function GET() {
     try {
-        const uid = await authenticate(req);     
-        await connectDB();
-        const user = await userModel.findOne({ firebaseUid: uid });
 
-        return NextResponse.json({
-            status: true,
-            message: user.addresses,
-        });
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            return NextResponse.json({ status: false, message: "Unauthorized" });
+        }
+
+        await connectDB();
+
+        const user = await userModel.findById(session?.user?.id);
+        if (!user) {
+            return NextResponse.json({ status: false, message: "User not found!" });
+        }
+
+        return NextResponse.json({ status: true, message: user.addresses });
 
     } catch (error) {
+
         return NextResponse.json({ status: false, message: error.message }, { status: 401 });
+
     }
 }

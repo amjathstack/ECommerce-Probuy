@@ -90,13 +90,14 @@ export default function ProductView({ params }) {
 
     const formData = new FormData();
     formData.append('productId', product?._id);
+    formData.append('vendorId', product?.vendorId);
     formData.append('title', product?.title);
     formData.append('image', product?.image[0]);
     formData.append('price', product?.price);
     formData.append('quantity', quantity);
 
     dispatch(addToCart(formData));
-    dispatch(addToCartItems({ productId: product?._id, title: product?.title, image: product?.image, price: product?.price, quantity }));
+    dispatch(addToCartItems({ vendorId: product?.vendorId, productId: product?._id, title: product?.title, image: product?.image, price: product?.price, quantity }));
 
   };
 

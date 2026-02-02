@@ -1,25 +1,67 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 import ordersModel from "../../../../models/Order";
 import connectDB from "../../../../config/connectDB";
-import authenticate from "../../../../middleware/authenticate";
-import userModel from "../../../../models/User";
 
 export async function POST(req) {
     try {
 
-        const uid = await authenticate(req);
-        if (!uid) {
+        const session = await getServerSession(authOptions);
+
+        if (!session) {
             return NextResponse.json({ message: 'User not found!' });
         }
-        const body = await req.json();
 
+        const body = await req.json();
         const { orderId, items, subTotal, tax, total, paymentStatus, paymentMethod, address } = body;
-        const user = await userModel.findOne({ firebaseUid: uid })
+
+        const groupedByVendor = items.reduce((acc, item) => {
+            const vendorId = item.vendorId
+
+            if (!acc[vendorId]) {
+                acc[vendorId] = [];
+            }
+
+            acc[vendorId].push(item);
+
+            return acc;
+        }, {});
+
+        const subOrders = Object.entries(groupedByVendor).map(
+            ([vendorId, vendorItems]) => {
+
+                const subTotal = vendorItems.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
+                    0
+                );
+
+                return {
+                    vendorId,
+                    items: vendorItems,
+                    subTotal,
+                    status: "Pending"
+                };
+            }
+        );
+
         await connectDB();
+
         const response = await ordersModel.create({
-            userId: user?._id, orderId, items, subTotal: Number(subTotal), tax: Number(tax), total: Number(total), paymentStatus, paymentMethod, address
+            orderId,
+            customerId: session?.user?.id,
+            subOrders,
+            subTotal,
+            tax,
+            total,
+            paymentStatus,
+            paymentMethod,
+            address
         })
-        return NextResponse.json({ status: true, message: response });
+
+        return NextResponse.json({
+            status: true, message: response
+        });
 
     } catch (error) {
 
@@ -31,15 +73,16 @@ export async function POST(req) {
 export async function GET(req) {
     try {
 
-        const uid = await authenticate(req);
+        const session = await getServerSession(authOptions);
 
-        if (!uid) {
+        if (!session) {
             return NextResponse.json({ message: 'User not found!' });
         }
 
-        const user = await userModel.findOne({ firebaseUid: uid });
         await connectDB();
-        const data = await ordersModel.find({ userId: user?._id });
+
+        const data = await ordersModel.find({ customerId: session?.user?.id });
+
         return NextResponse.json({ status: true, message: data });
 
     } catch (error) {

@@ -10,12 +10,14 @@ import {
     openSignUpCard,
 } from "@/features/components/componentsSlice";
 import axios from "axios";
+import { signIn } from "next-auth/react";
 
 function SignUpCard() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [formClose, setFormClose] = useState(false);
 
     const dispatch = useDispatch();
     const { signUpCardStatus } = useSelector((state) => state.components);
@@ -38,14 +40,25 @@ function SignUpCard() {
 
             const response = await axios.post("/api/user", formData);
 
-            console.log(response.data.message)
+            if (response.data.status && response.data.message) {
+                const result = await signIn("credentials", {
+                    redirect: false,
+                    email,
+                    password,
+                });
 
-            if(response.data.message){
-                return dispatch(closeSignUpCard());
+                if (result?.error) {
+                    toast.error(result.error);
+                    setLoading(false);
+                    return;
+                }
+                setLoading(false);
+                setFormClose(true);
+                return
             }
 
             return toast.error(response.data.message)
-            
+
         } catch (error) {
             console.log(error.message)
             toast.error("Signup failed. Please try again.");
@@ -63,6 +76,12 @@ function SignUpCard() {
 
         return () => document.body.classList.remove("body-no-scroll");
     }, [signUpCardStatus]);
+
+    useEffect(() => {
+        if(!loading && formClose){
+            dispatch(closeSignUpCard());
+        }
+    }, [loading, formClose])
 
     if (!signUpCardStatus) return null;
 
