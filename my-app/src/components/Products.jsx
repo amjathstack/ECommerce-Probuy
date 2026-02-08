@@ -10,6 +10,7 @@ export default function Products() {
   const { products = [] } = useSelector((state) => state.products);
   const router = useRouter();
 
+
   return (
 
     <div className="w-full flex justify-center">
@@ -36,7 +37,7 @@ export default function Products() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h4 className="text-sm md:font-semibold text-md lg:font-semibold lg:text-[15px] md:text-[15px]">{p.title.slice(0, 23)}{p.title.length > 23 && <span>....</span>}</h4>
-                    <p className="text-xs text-gray-500 mt-1">{p.stockCount > 0 ? (<span className="text-[Green]">Stock In</span>) : (<span className="text-[red]">Sold Out</span>)} <span className="font-medium text-gray-700">{p.vendor}</span></p>
+                    <p className="text-xs text-gray-500 mt-1">by <span className="font-medium text-gray-700">{p.vendorId.title}</span> {p.stockCount > 0 ? (<span className="text-[Green]">Stock In</span>) : (<span className="text-[red]">Sold Out</span>)}</p>
                   </div>
                   <div className="text-right">
                     <div className="font-bold">${p.price}</div>

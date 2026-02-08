@@ -1,17 +1,14 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import storesModel from "../../../../models/Store";
 import userModel from "../../../../models/User";
 import cloudinary from "cloudinary";
 import { NextResponse } from "next/server";
-
-
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
-})
+});
 
 export async function POST(req) {
     try {
@@ -47,14 +44,16 @@ export async function POST(req) {
             updatedProfile = result.secure_url;
         }
 
-        await userModel.updateOne({ _id: session?.user?.id }, { $set: { isSeller: true } });
-
-        const response = await storesModel.create({
-            userId: session?.user?.id,
-            title,
-            description,
-            image: updatedProfile
-        })
+        const response = await userModel.updateOne({ _id: session?.user?.id }, {
+            $set: {
+                userId: session?.user?.id,
+                title,
+                description,
+                profileImage: updatedProfile,
+                isSeller: true,
+                earnings: 0
+            }
+        });
 
         return NextResponse.json({ status: true, message: response });
 

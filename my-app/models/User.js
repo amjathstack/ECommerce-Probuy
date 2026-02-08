@@ -19,8 +19,11 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     cart: { type: Array, default: [] },
     isSeller: { type: Boolean, default: false },
-    profileImage: { type: String, default: '' },
     addresses: [addressesSchema],
+    title: { type: String },
+    description: { type: String },
+    profileImage: { type: String, default: '' },
+    earnings: { type: Number }
 
 })
 

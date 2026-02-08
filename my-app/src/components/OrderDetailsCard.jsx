@@ -1,19 +1,35 @@
 'use client'
 
+import { X } from "lucide-react";
+import { useEffect } from "react";
+
 export default function OrderDetailsCard({ order, onSetShow }) {
+
     if (!order) return null;
+
+    useEffect(() => {
+        
+        if(order){
+            document.body.style.overflow = "hidden";
+        }
+
+        return () => document.body.style.overflow = "";
+
+    }, [order])
+
+    useEffect(() => {
+        console.log(order)    
+    }, [order])
+
     return (
-        <div className="fixed w-full h-full insert-0 top-0 left-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white rounded-[10px] p-6 relative">
+        <div className="fixed w-full h-full insert-0 top-0 left-0 flex items-center justify-center bg-white/40 z-50">
+            <div className="bg-white border border-gray-100 rounded-[10px] p-6 relative">
 
                 <div className="flex gap-60">
                     <h2 className="text-2xl font-bold mb-4">Order Details</h2>
-                    <button
-                        className="text-gray-500 hover:text-gray-800"
+                    <X className="text-gray-500 hover:text-gray-800"
                         onClick={() => onSetShow(false)}
-                    >
-                        ✕
-                    </button>
+                    />
                 </div>
 
 
@@ -27,7 +43,7 @@ export default function OrderDetailsCard({ order, onSetShow }) {
                     <div className="py-1 border-b border-gray-200">
                         <p className="font-semibold text-gray-700">Items:</p>
                         <ul className="list-disc list-inside text-gray-900 space-y-1">
-                            {order.items.map((item, index) => (
+                            {order.subOrders.map((item, index) => (
                                 <li key={index}>
                                     {item.title} x {item.quantity} (${item.price})
                                 </li>
@@ -60,7 +76,7 @@ export default function OrderDetailsCard({ order, onSetShow }) {
                                     : 'bg-yellow-100 text-yellow-700'
                                 }`}
                         >
-                            {order.status}
+                            {order.orderStatus}
                         </span>
                     </div>
 
@@ -76,7 +92,7 @@ export default function OrderDetailsCard({ order, onSetShow }) {
 
                     <div className="py-1 border-b border-gray-200">
                         <p className="font-semibold text-gray-700">Shipping Address:</p>
-                        <p className="text-gray-900">{order.addresses}</p>
+                        <p className="text-gray-900">{order.address.city}</p>
                     </div>
 
                     <div className="py-1 border-b border-gray-200 flex justify-between text-gray-700">

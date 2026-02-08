@@ -37,7 +37,7 @@ export default function CartPage() {
         if (qty === -1) {
             if (item.quantity !== 1) {
                 dispatch(updateCartItems({ productId: id, quantity: qty }));
-                dispatch(updateCart(user?._id));
+                dispatch(updateCart());
             }
         } else {
             dispatch(updateCartItems({ productId: id, quantity: qty }));
@@ -59,7 +59,6 @@ export default function CartPage() {
         } else {
 
             const data = {
-                orderId: 8474775,
                 items: cartItems,
                 subTotal: subTotal,
                 tax: tax,
@@ -74,10 +73,12 @@ export default function CartPage() {
             const response = await axios.post('/api/order', data, { headers: { 'Content-Type': 'application/json' } });
 
             if (response.data.message && response.data.status) {
+
                 dispatch(clearCart());
                 dispatch(clearToCart());
                 router.push('/order');
                 return toast.success("Order placed");
+
             } else {
                 toast.error(response.data.message);
                 return console.log(response.data.message);
@@ -207,7 +208,7 @@ export default function CartPage() {
                                     <div className="absolute left-0 top-[37px] w-full bg-gray-200">
                                         {addressList.map((a, i) => {
                                             return <div key={i} onClick={() => setAddress({
-                                                fullName: a.fullName,
+                                                name: a.name,
                                                 phoneNumber: a.phoneNumber,
                                                 streetAddress1: a.strAddress1,
                                                 streetAddress2: a.strAddress2,

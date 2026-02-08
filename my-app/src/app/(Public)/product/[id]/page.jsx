@@ -90,7 +90,7 @@ export default function ProductView({ params }) {
 
     const formData = new FormData();
     formData.append('productId', product?._id);
-    formData.append('vendorId', product?.vendorId);
+    formData.append('vendorId', product.vendorId?._id);
     formData.append('title', product?.title);
     formData.append('image', product?.image[0]);
     formData.append('price', product?.price);
@@ -125,12 +125,19 @@ export default function ProductView({ params }) {
 
           <div className="w-[100%] flex flex-col items-center lg:items-start">
             <div className="flex items-center justify-center w-[100%] aspect-[4/3] overflow-hidden rounded-xl border border-gray-100 lg:w-[80%] md:w-[80%]">
-              <img
-                src={mainImage}
-                alt={product?.title || "Product Image"}
-                className="object-cover rounded-lg"
-              />
 
+              {
+                mainImage &&
+
+                <Image
+                  src={mainImage}
+                  alt={product?.title || "Product Image"}
+                  className="object-cover rounded-lg w-full h-full"
+                  width={1000}
+                  height={1000}
+                />
+
+              }
 
             </div>
 
@@ -156,17 +163,23 @@ export default function ProductView({ params }) {
 
           <div>
             <h1 className="text-3xl font-bold text-gray-800">{product?.title}</h1>
-            {/* <p className="mt-2 text-sm text-gray-500">⭐/ {(totalRating / totalComment).toFixed(2)}</p> */}
 
-            <div className="mt-4 text-2xl font-semibold text-indigo-600">
+            <div className="mt-3 text-2xl font-semibold text-indigo-600">
               ${product?.price.toFixed(2)}
             </div>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">{product?.description}</p>
+            <p className="mt-3 text-gray-700 leading-relaxed">{product?.description}</p>
 
-            <p className="mt-4 text-gray-700">Availibility : {product?.stockCount > 0 ? <span className="text-[green]">In stock</span> : <span className="text-[red]">Sold out</span>}</p>
+            <p className="mt-2 text-sm text-gray-500">⭐/ {commentList.length > 0
+              ? commentList?.reduce((t, c) => c.rating + t, 0) / commentList?.length.toFixed(1)
+              : 0
+            }</p>
 
-            <div className="mt-6 flex items-center gap-2">
+            <p className="mt-3 text-[14px] text-gray-700 leading-relaxed">From: <a href="#" className="hover:text-indigo-600">{product?.vendorId?.title}</a></p>
+
+            <p className="mt-3 text-gray-700">Availibility : {product?.stockCount > 0 ? <span className="text-[green]">In stock</span> : <span className="text-[red]">Sold out</span>}</p>
+
+            <div className="mt-5 flex items-center gap-2">
               <span className="text-sm font-medium text-gray-600">Quantity:</span>
               <div className="flex items-center border rounded-full overflow-hidden">
                 <button
@@ -195,8 +208,11 @@ export default function ProductView({ params }) {
                 </button>
               </div>
               : <div className="mt-6 flex gap-3">
-                <button onClick={() => router.push('/public/cart')} className="flex rounded-full border border-indigo-600 text-indigo-600 py-3 px-33 font-medium hover:bg-indigo-50">
+                <button onClick={() => router.push('/cart')} className="flex-1 rounded-full bg-indigo-600 text-white py-3 font-medium hover:bg-indigo-700">
                   View Cart
+                </button>
+                <button onClick={() => handleCartBuy("B")} className="flex-1 rounded-full border border-indigo-600 text-indigo-600 py-3 font-medium hover:bg-indigo-50">
+                  Buy Now
                 </button>
               </div>
             }
@@ -212,7 +228,7 @@ export default function ProductView({ params }) {
             {Array.isArray(commentList) && commentList.length > 0 && commentList?.map((c, i) => (
               <div key={i} className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-100 w-full lg:w-[50%]">
                 <div className="flex gap-2 items-center">
-                  <Image src={c?.userId?.profileImage || profile} width={10} height={10} className="w-6 border border-gray-300 rounded-full" alt="profile-image" />
+                  <Image src={c?.userId?.profileImage || profile} width={1000} height={1000} className="w-6 h-6 border border-gray-300 rounded-full" alt="profile-image" />
                   <p className="text-[13px] text-gray-800">{c?.userId?._id === session?.user?.id ? "You" : c?.userId?.name}</p>
                 </div>
 

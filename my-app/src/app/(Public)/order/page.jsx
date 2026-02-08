@@ -27,46 +27,64 @@ export default function OrderPage() {
             toast.error(response.data.message);
 
         }
-
     }
 
     useEffect(() => {
         fetchOrders()
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        console.log(orders)
+    }, [orders])
 
     return (
-        <div className="w-full min-h-screen bg-gray-100 p-6 flex flex-col items-center">
-            <h1 className="text-xl md:text-3xl font-bold mb-6">My Orders</h1>
-            <div className="md:w-[80%] w-[100%] grid gap-4">
+        <div className="w-full min-h-screen p-6 flex flex-col items-center">
+            {showOrderDetails && <OrderDetailsCard order={showOrderDetails} onSetShow={setShowOrderDetails} />}
+
+            <div className="md:w-[90%] w-full">
+                <h1 className="ml-5 text-xl md:text-2xl font-semibold py-10">My Orders</h1>
+            </div>
+
+            <div className="md:w-[90%] w-[100%] grid gap-4">
+
                 {Array.isArray(orders) && orders.length > 0 ? orders.map((order, index) =>
                     <div
                         key={index}
-                        className="bg-white p-6 rounded-md shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                        className="border border-gray-300 shadow-sm bg-white p-6 gap-3 rounded-md flex flex-col md:flex-row md:justify-between"
                     >
-                        {showOrderDetails && <OrderDetailsCard order={order} onSetShow={setShowOrderDetails} />}
-                        <div className="md:flex gap-5">
-                            <p className="text-sm sm:text-lg font-semibold">Order ID: {order.orderId}</p>
-                            <p className="text-gray-700">Order Placed: {new Date(order.createdAt).toLocaleDateString()}</p>
+                        <div className="gap-5">
+                            <p className="text-sm text-[14px] text-gray-900 font-semibold"><span className="text-sm text-[16px]">Order ID:</span> {order.orderId}</p>
+                            <p className="text-gray-700 text-[14px]">Order Placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
                         </div>
 
-                        <div className="md:flex-row gap-5 flex flex-col items-start md:items-end">
-                            <p className="text-sm sm:text-lg font-bold">Total: ${order.total.toFixed(2)}</p>
-                            <div className="flex justify-center md:flex-row gap-5">
-                                <span
-                                    className={`px-3 py-1 rounded-full text-[12px] sm:text-sm font-medium mt-2 ${order.status === "delivered"
-                                        ? "bg-green-100 text-green-700"
-                                        : order.status === "pending"
-                                            ? "bg-blue-100 text-blue-700"
-                                            : "bg-yellow-100 text-yellow-700"
-                                        }`}
-                                >
-                                    {order.status}
-                                </span>
-                                <button onClick={() => setShowOrderDetails(true)} className="cursor-pointer text-[12px] md:text-sm rounded-full">
-                                    View details
-                                </button>
-                            </div>
+                        <div>
+                            <p className="text-sm text-[16px] text-gray-900">Items:</p>
+                            <p className="text-gray-700 sm:text-[14px]">
+                                {order?.items?.map((item, index) => (
+                                    <span key={index}>
+                                        {item.title} (x{item.quantity})
+                                        <br />
+                                    </span>
+                                ))}
+                            </p>
                         </div>
+
+                        <div className="gap-5">
+                            <p className="text-sm text-[12px] text-gray-700">Sub Total: ${order.subTotal.toFixed(2)}</p>
+                            <p className="text-sm text-[12px] text-gray-700">Tax: ${order.tax.toFixed(2)}</p>
+                            <p className="text-sm text-[14px] text-gray-900">Total: ${order.total.toFixed(2)}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-sm text-[16px] text-gray-900">Address:</p>
+                            <p className="text-gray-700 text-[14px]">{order.address.name + ", " + order.address.streetAddress1 + " " + order.address.streetAddress2}</p>
+                            <p className="text-gray-700 text-[14px]">{order.address.city + ", " + order.address.province + ", " + order.address.postalCode}</p>
+                        </div>
+
+                        <div className="gap-5">
+                            <p className="w-22 p-1 h-6 border border-gray-500 flex items-center justify-center bg-gray-200 rounded-full text-sm sm:text-lg sm:text-[13px]">{order.orderStatus}</p>
+                        </div>
+
                     </div>
                 ) : <p className="text-center">Orders not found</p>
                 }

@@ -32,7 +32,7 @@ export async function POST(req) {
         if (!user) {
             return NextResponse.json({ status: false, message: "User not found" });
         }
-
+        
         user.addresses.push({
             name,
             phoneNumber,

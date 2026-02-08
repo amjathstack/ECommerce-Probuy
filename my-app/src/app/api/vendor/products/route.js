@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import storesModel from "../../../../../models/Store";
 import productsModel from "../../../../../models/Products";
 import cloudinary from "cloudinary";
 import { NextResponse } from "next/server";
@@ -23,13 +22,7 @@ export async function GET() {
             return NextResponse.json({ status: false, message: 'User not found!' }, { status: 404 });
         }
 
-        const store = await storesModel.findOne({ userId: session?.user?.id });
-
-        if (!store) {
-            return NextResponse.json({ status: false, message: 'Store not found!' }, { status: 404 });
-        };
-
-        const allProducts = await productsModel.find({ storeId: store._id });
+        const allProducts = await productsModel.find({ vendorId: session?.user?.id });
 
         return NextResponse.json({ status: true, message: allProducts }, { status: 200 });
 
@@ -58,12 +51,6 @@ export async function POST(req) {
         const description = formData.get('description');
         const category = formData.get('category');
         const stockCount = formData.get('stockCount');
-
-        const store = await storesModel.findOne({ userId: session?.user?.id });
-
-        if (!store) {
-            return NextResponse.json({ status: false, message: error.message });
-        }
 
         const finalImagesArray = [];
 
@@ -95,7 +82,6 @@ export async function POST(req) {
 
         const response = await productsModel.create({
             vendorId: session?.user?.id,
-            storeId: store._id,
             title,
             price: Number(price),
             image: finalImagesArray,
@@ -133,12 +119,6 @@ export async function PUT(req) {
         const description = formData.get('description');
         const category = formData.get('category');
         const stockCount = formData.get('stockCount');
-
-        const store = await storesModel.findOne({ userId: session?.user?.id });
-
-        if (!store) {
-            return NextResponse.json({ status: false, message: error.message });
-        }
 
         const finalImagesArray = [];
 

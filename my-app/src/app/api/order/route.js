@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import ordersModel from "../../../../models/Order";
 import connectDB from "../../../../config/connectDB";
+import subOrdersModel from "../../../../models/SubOrder";
+import orderItemsModel from "../../../../models/OrderItem";
 
 export async function POST(req) {
     try {
@@ -14,53 +16,71 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const { orderId, items, subTotal, tax, total, paymentStatus, paymentMethod, address } = body;
+        const { items, subTotal, tax, total, paymentStatus, paymentMethod, address } = body;
 
-        const groupedByVendor = items.reduce((acc, item) => {
-            const vendorId = item.vendorId
+        const subOrders = [];
 
-            if (!acc[vendorId]) {
-                acc[vendorId] = [];
+        for (const item of items) {
+
+            const exitOrder = subOrders.find((i) => i.vendorId === item.vendorId);
+
+            if (exitOrder) {
+                exitOrder.items.push(item)
+                exitOrder.subTotal += item.price*item.quantity
+            } else {
+                const newOrder = {
+                    vendorId: item.vendorId,
+                    items: [item],
+                    subTotal: item.price*item.quantity
+
+                }
+                subOrders.push(newOrder)
             }
-
-            acc[vendorId].push(item);
-
-            return acc;
-        }, {});
-
-        const subOrders = Object.entries(groupedByVendor).map(
-            ([vendorId, vendorItems]) => {
-
-                const subTotal = vendorItems.reduce(
-                    (sum, item) => sum + item.price * item.quantity,
-                    0
-                );
-
-                return {
-                    vendorId,
-                    items: vendorItems,
-                    subTotal,
-                    status: "Pending"
-                };
-            }
-        );
+        }
 
         await connectDB();
 
-        const response = await ordersModel.create({
-            orderId,
+        const order_response = await ordersModel.create({
             customerId: session?.user?.id,
-            subOrders,
             subTotal,
             tax,
             total,
             paymentStatus,
             paymentMethod,
             address
-        })
+        });
+
+        if (!order_response) {
+            return NextResponse.json({
+                status: true, message: "Order was not created!"
+            });
+        }
+
+        console.log(subOrders)
+
+        for (const order of subOrders) {
+
+            const subOrder_response = await subOrdersModel.create({
+                orderId: order_response._id,
+                vendorId: order.vendorId,
+                subTotal: order.subTotal,
+            });
+
+            for (const item of order.items) {
+                const data = {
+                    ...item,
+                    orderId: order_response._id,
+                    subOrderId: subOrder_response._id,
+                }
+
+                await orderItemsModel.create(data);
+            }
+
+
+        }
 
         return NextResponse.json({
-            status: true, message: response
+            status: true, message: "Full Order placed successfully"
         });
 
     } catch (error) {
@@ -70,7 +90,7 @@ export async function POST(req) {
     }
 }
 
-export async function GET(req) {
+export async function GET() {
     try {
 
         const session = await getServerSession(authOptions);
@@ -81,9 +101,22 @@ export async function GET(req) {
 
         await connectDB();
 
-        const data = await ordersModel.find({ customerId: session?.user?.id });
+        const orders = await ordersModel.find({ customerId: session?.user?.id });
 
-        return NextResponse.json({ status: true, message: data });
+        const allOrders = [];
+
+        for (const order of orders) {
+
+            const orderObj = order.toObject();
+
+            const products = await orderItemsModel.find({ orderId: orderObj._id });
+
+            orderObj.items = products;
+            allOrders.push(orderObj);
+
+        }
+
+        return NextResponse.json({ status: true, message: allOrders });
 
     } catch (error) {
 

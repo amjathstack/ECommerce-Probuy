@@ -57,12 +57,18 @@ export const updateCart = createAsyncThunk(
 )
 
 export const clearCart = createAsyncThunk("cart/clearCart", async (_, thunkAPI) => {
+
   try {
-    const token = await auth.currentUser?.getIdToken();
-    const response = await axios.put(`http://localhost:3000/api/products`, {}, { headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` } });
+    const cartData = {}
+    const response = await axios.put(`/api/products/cart`, cartData, { headers: { "Content-Type": "application/json" } });
+    console.log(response.data);
     return response.data.message;
+
+
   } catch (err) {
+
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");
+
   }
 });
 

@@ -1,15 +1,13 @@
-import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 import connectDB from "../../../../config/connectDB";
 import productsModel from "../../../../models/Products";
-import userModel from "../../../../models/User";
 
 
 
 export async function GET(req) {
   try {
     await connectDB();
-    const products = await productsModel.find();
+    const products = await productsModel.find().populate("vendorId");
     return NextResponse.json({ status: true, message: products })
 
   } catch (error) {

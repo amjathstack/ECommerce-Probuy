@@ -53,7 +53,7 @@ export default function DashboardMenu() {
                                 ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                                 : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                         }>
-                        🏠 Dashboard
+                        Dashboard
                     </a>
                     <a onClick={() => handleProducts()}
                         className={
@@ -61,7 +61,7 @@ export default function DashboardMenu() {
                                 ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                                 : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                         }>
-                        📦 Products
+                        Products
                     </a>
                     <a onClick={() => handleOrders()}
                         className={
@@ -69,14 +69,14 @@ export default function DashboardMenu() {
                                 ? "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                                 : "block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                         }>
-                        🛍️ Orders
+                        Orders
                     </a>
                     <a onClick={() => handleSettings()} className={
                         page === 'settings'
                             ? "flex gap-1 block p-3 pl-10 hover:bg-indigo-50 cursor-pointer border-r-5 border-indigo-500"
                             : "flex gap-1 block p-3 pl-10 hover:bg-indigo-50 cursor-pointer"
                     }>
-                        <Image width={22} src={leave_icon} alt='leave_icon' /> Back to Site
+                        <Image width={18} src={leave_icon} alt='leave_icon' /> Back to Site
                     </a>
                 </nav>
 

@@ -46,6 +46,7 @@ export default function AddAddressCard({ onClose, fetchAddresses }) {
         const response = await axios.post('/api/user/address', formData);
 
         if (response.data.status && response.data.message) {
+            console.log(response.data.message)
             toast.success("Address saved!");
             setLoading(false);
             setFormClose(true);

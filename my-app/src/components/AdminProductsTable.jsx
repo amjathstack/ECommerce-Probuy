@@ -12,9 +12,9 @@ export default function AdminProductsTable({ products }) {
   const dispatch = useDispatch();
 
   return (
-    <div className="overflow-x-auto bg-white shadow">
+    <div className="overflow-x-auto bg-white">
       <table className="min-w-full text-left text-gray-600">
-        <thead className="bg-gray-100 text-gray-700 text-sm uppercase">
+        <thead className="text-gray-500 text-[13px] uppercase">
           <tr>
             <th className="px-6 py-3">Product</th>
             <th className="px-6 py-3">Category</th>
@@ -28,7 +28,7 @@ export default function AdminProductsTable({ products }) {
             products.map((p) => (
               <tr
                 key={p._id}
-                className="border-b last:border-none hover:bg-gray-50 transition"
+                className="text-[13px] border-t border-gray-200 last:border-none hover:bg-gray-50 transition"
               >
                 <td className="px-6 py-4 font-medium text-gray-800">{p.title}</td>
                 <td className="px-6 py-4">{p.category}</td>
@@ -39,10 +39,10 @@ export default function AdminProductsTable({ products }) {
                     onClick={() => setShowEditTable(p)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                   >
-                    <Edit size={18} />
+                    <Edit size={16} />
                   </button>
                   <button onClick={() => dispatch(deleteProduct({ productId: p._id }))} className="text-red-500 hover:text-red-700">
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </button>
                 </td>
               </tr>
