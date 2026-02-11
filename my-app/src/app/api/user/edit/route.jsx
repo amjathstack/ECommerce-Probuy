@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import userModel from "../../../../../models/User";
 import { v2 as cloudinary } from "cloudinary";
-import authenticate from "../../../../../middleware/authenticate";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
