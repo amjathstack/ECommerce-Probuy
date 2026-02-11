@@ -3,16 +3,21 @@ import { useEffect, useState } from "react";
 import { format } from 'date-fns';
 import axios from "axios";
 import { toast } from "react-toastify";
+import preloader from "../../../assets/preeloader.gif";
+import Image from "next/image";
 
 export default function AdminOrdersList() {
 
     const [orders, setOrders] = useState(null);
     const [isOpen, setIsOpen] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const statuses = ['Pending', 'Processing', 'Delivered'];
 
 
     async function fetchOrders() {
+
+        setLoading(true)
 
         try {
 
@@ -30,6 +35,8 @@ export default function AdminOrdersList() {
 
         }
 
+        setLoading(false);
+
     }
 
     const changeStatus = async (id, status) => {
@@ -38,8 +45,6 @@ export default function AdminOrdersList() {
         try {
 
             const response = await axios.put('/api/vendor/orders', { subOrderId: id, status }, { headers: { "Content-Type": "application/json" } });
-
-            console.log(response.data.message)
 
             if (response.data.status && response.data.message) {
 
@@ -79,7 +84,7 @@ export default function AdminOrdersList() {
 
     return (
         <div className="w-full bg-gray-50 md:w-[85%] md:p-10 p-1 md:ml-[15%]">
-            <div className="p-6">
+            <div className="">
                 <h1 className="text-xl font-semibold text-gray-800 mb-6">
                     Orders List
                 </h1>
@@ -156,8 +161,27 @@ export default function AdminOrdersList() {
                                     <td className="p-4 text-gray-600">{format(new Date(order.createdAt), 'MMM dd, yyyy HH:mm')}</td>
                                 </tr>
                             ))}
+
+                            {
+                                !loading && orders && orders.length === 0 && (
+                                    <tr>
+                                        <td className="py-10" colSpan="100%" style={{ textAlign: "center" }}>
+                                            Products not found
+                                        </td>
+                                    </tr>
+                                )
+                            }
                         </tbody>
                     </table>
+
+                    {
+                        loading &&
+                        <div className="w-full flex justify-center py-20">
+                            <Image src={preloader} alt="preloader" />
+                        </div>
+
+                    }
+
                 </div>
             </div>
         </div>

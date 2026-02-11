@@ -144,7 +144,7 @@ function CreateStoreForm() {
                                        peer w-full rounded-full border border-gray-300 bg-transparent
                                        px-5 py-3 text-gray-900 outline-none transition
                                        placeholder-transparent
-                                       focus:border-[#27AE60] focus:ring-1 focus:ring-[#27AE60]
+                                       focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600
                                      "
                         />
                         <label
@@ -158,7 +158,7 @@ function CreateStoreForm() {
                         
                                         peer-focus:-top-[1px]
                                         peer-focus:text-xs
-                                        peer-focus:text-[#27AE60]
+                                        peer-focus:text-indigo-600
 
                                         peer-not-placeholder-shown:-top-[1px]
                                         peer-not-placeholder-shown:text-xs
@@ -180,7 +180,7 @@ function CreateStoreForm() {
                                        peer w-full rounded-[10px] border border-gray-300 bg-transparent
                                        px-5 py-3 text-gray-900 outline-none transition
                                        placeholder-transparent
-                                       focus:border-[#27AE60] focus:ring-1 focus:ring-[#27AE60]
+                                       focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600
                                        h-30
                                        max-h-40
                                        min-h-15
@@ -197,7 +197,7 @@ function CreateStoreForm() {
                         
                                         peer-focus:-top-[1px]
                                         peer-focus:text-xs
-                                        peer-focus:text-[#27AE60]
+                                        peer-focus:text-indigo-600
                     
                                         peer-not-placeholder-shown:-top-[1px]
                                         peer-not-placeholder-shown:text-xs
@@ -212,9 +212,9 @@ function CreateStoreForm() {
                         type="submit"
                         disabled={loading}
                         className={`
-                                    relative mt-7 w-full rounded-full bg-[#27AE60]
+                                    relative mt-7 w-full rounded-full bg-indigo-600
                                     px-6 py-3 text-sm font-medium text-white transition
-                                    hover:bg-[#27AE60]/90
+                                    hover:bg-indigo-600/90
                                     ${loading ? "cursor-not-allowed opacity-80" : ""}
                                   `}
                     >

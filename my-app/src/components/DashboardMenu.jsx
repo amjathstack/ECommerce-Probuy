@@ -1,3 +1,4 @@
+"use client"
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -41,8 +42,8 @@ export default function DashboardMenu() {
     return (
         <>
             <aside className="z-5 w-[15%] fixed flex h-full  bg-white shadow-lg hidden md:flex flex-col">
-                <div className="px-6 py-6 border-b">
-                    <h1 className="text-2xl font-bold text-indigo-600">ShopAdmin</h1>
+                <div className="mt-2 border-b border-gray-200">
+                    <h1 className="text-2xl py-5 pl-10 font-bold text-indigo-600">Probuy</h1>
                 </div>
 
                 <nav className="flex-1 space-y-3 text-gray-700 mt-[30px]">
@@ -80,8 +81,8 @@ export default function DashboardMenu() {
                     </a>
                 </nav>
 
-                <div className="p-6 border-t text-sm text-gray-500">
-                    &copy; 2025 ShopAdmin
+                <div className="p-6 border-t border-gray-200 text-sm text-gray-500">
+                    &copy; 2026 Dashboard
                 </div>
             </aside>
         </>

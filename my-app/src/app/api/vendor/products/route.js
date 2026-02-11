@@ -90,9 +90,13 @@ export async function POST(req) {
             stockCount: Number(stockCount)
         });
 
+        console.log(response);
+
         return NextResponse.json({ status: true, message: response });
 
     } catch (error) {
+
+        console.log(error.message);
 
         return NextResponse.json({ message: error.message });
     }

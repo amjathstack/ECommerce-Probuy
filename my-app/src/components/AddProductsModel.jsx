@@ -81,7 +81,7 @@ export default function AddProductModal({ onClose, setProducts }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 py-20 overflow-scroll-y">
-            <div className="bg-white rounded-xl shadow-lg p-6 px-8 relative">
+            <div className="p-7 bg-white rounded-xl shadow-lg relative">
                 <button
                     onClick={() => closeCard()}
                     className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"

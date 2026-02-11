@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <SessionProvider>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <ToastContainer />
+          <ToastContainer position="bottom-right" />
           <Provider store={store}>
             {children}
           </Provider>

@@ -53,7 +53,7 @@ function LoginCard() {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-            <div className="relative bg-white text-gray-500 w-full max-w-100 mx-4 p-6 rounded-xl shadow-lg">
+            <div className="relative bg-white text-gray-500 w-full max-w-[400px] mx-4 p-6 rounded-xl shadow-lg">
 
                 <button
                     onClick={() => dispatch(closeLoginCard())}
@@ -82,7 +82,7 @@ function LoginCard() {
                                        peer w-full rounded-full border border-gray-300 bg-transparent
                                        px-5 py-3 text-gray-900 outline-none transition
                                        placeholder-transparent
-                                       focus:border-[#27AE60] focus:ring-1 focus:ring-[#27AE60]
+                                       focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600
                                      "
                         />
                         <label
@@ -96,7 +96,7 @@ function LoginCard() {
                         
                                         peer-focus:-top-[1px]
                                         peer-focus:text-xs
-                                        peer-focus:text-[#27AE60]
+                                        peer-focus:text-indigo-600
                     
                                         peer-not-placeholder-shown:-top-[1px]
                                         peer-not-placeholder-shown:text-xs
@@ -119,7 +119,7 @@ function LoginCard() {
                                        peer w-full rounded-full border border-gray-300 bg-transparent
                                        px-5 py-3 text-gray-900 outline-none transition
                                        placeholder-transparent
-                                       focus:border-[#27AE60] focus:ring-1 focus:ring-[#27AE60]
+                                       focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600
                                      "
                         />
                         <label
@@ -133,7 +133,7 @@ function LoginCard() {
                        
                                        peer-focus:-top-[1px]
                                        peer-focus:text-xs
-                                       peer-focus:text-[#27AE60]
+                                       peer-focus:text-indigo-600
                        
                                        peer-not-placeholder-shown:-top-[1px]
                                        peer-not-placeholder-shown:text-xs
@@ -148,9 +148,9 @@ function LoginCard() {
                         type="submit"
                         disabled={loading}
                         className={`
-                                    relative mt-7 w-full rounded-full bg-[#27AE60]
+                                    relative mt-7 w-full rounded-full bg-indigo-600
                                     px-6 py-3 text-sm font-medium text-white transition
-                                    hover:bg-[#27AE60]/90
+                                    hover:bg-indigo-600/90
                                     ${loading ? "cursor-not-allowed opacity-80" : ""}
                                   `}
                     >
@@ -165,7 +165,7 @@ function LoginCard() {
                     Create a new account{" "}
                     <span
                         onClick={() => dispatch(openSignUpCard())}
-                        className="cursor-pointer font-medium text-[#00753b] hover:underline"
+                        className="cursor-pointer font-medium text-indigo-600 hover:underline"
                     >
                         Sign up
                     </span>

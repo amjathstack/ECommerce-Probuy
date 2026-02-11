@@ -5,9 +5,6 @@ import AdminProductsTable from "@/components/AdminProductsTable";
 import AddProductModal from "@/components/AddProductsModel";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchVendorProducts } from "@/features/products/productSlice";
-import productDeleteConfirm from "@/components/productDeleteConfirm";
-import axios from "axios";
-import { toast } from "react-toastify";
 
 
 export default function AdminProducts() {
@@ -15,7 +12,7 @@ export default function AdminProducts() {
   const [showModal, setShowModal] = useState(false);
 
   const dispatch = useDispatch();
-  const { vendorProducts } = useSelector((state) => state.products);
+  const { vendorProducts, loading } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fetchVendorProducts());
@@ -28,14 +25,14 @@ export default function AdminProducts() {
         <h2 className="text-xl font-semibold text-gray-800">Products</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex text-[14px] items-center gap-2 cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition"
+          className="flex text-[14px] items-center gap-2 cursor-pointer bg-indigo-600 text-white px-3 py-1 rounded-full hover:bg-indigo-700 transition"
         >
           <Plus size={16} /> Add Product
         </button>
       </div>
 
-      <AdminProductsTable products={vendorProducts} />
-      {showModal && <AddProductModal onClose={() => setShowModal(false)}/>}
+      <AdminProductsTable products={vendorProducts} loading={loading} />
+      {showModal && <AddProductModal onClose={() => setShowModal(false)} />}
 
     </div>
   );

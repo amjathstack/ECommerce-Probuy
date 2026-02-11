@@ -4,10 +4,7 @@ import Navbar from "@/components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchCart } from "@/features/cart/cartSlice";
-import { fetchAddress } from "@/features/address/addressSlice";
-
 import { fetchProducts } from "@/features/products/productSlice";
-import { fetchOrders } from "@/features/order/orderSlice";
 import LoginCard from "@/components/LoginCard";
 import SignUpCard from "@/components/SignUpCard";
 import { useSession } from "next-auth/react";
@@ -17,7 +14,7 @@ export default function PublicLayout({ children }) {
 
     const { loginCardStatus, signUpCardStatus, createStoreFormStatus } = useSelector((state) => state.components);
     const dispatch = useDispatch();
-    const { data:session } = useSession();
+    const { data: session } = useSession();
 
 
     useEffect(() => {
@@ -26,29 +23,15 @@ export default function PublicLayout({ children }) {
         }
     }, [session])
 
-    // useEffect(() => {
-    //     dispatch(fetchAddress(token))
-    // }, [dispatch, token])
-
     useEffect(() => {
         dispatch(fetchProducts());
     }, [])
-
-    // useEffect(() => {
-    //     if (token) {
-    //         dispatch(fetchOrders(token));
-    //     }
-    // }, [dispatch, token]);
-
-    useEffect(() => {
-        console.log(session)
-    }, [session])
 
     return (
         <>
             {loginCardStatus && <LoginCard />}
             {signUpCardStatus && <SignUpCard />}
-            { createStoreFormStatus && <CreateStoreForm/> }
+            {createStoreFormStatus && <CreateStoreForm />}
             <Navbar />
             {children}
             <Footer />

@@ -24,7 +24,7 @@ export default function Navbar() {
             <div className="w-[90%] flex items-center justify-between h-16">
 
                 <div className="flex items-center gap-4">
-                    <div onClick={() => router.push('/')} className="text-2xl cursor-pointer">Probuy</div>
+                    <div onClick={() => router.push('/')} className="cursor-pointer text-[25px] font-semibold text-indigo-600">Probuy</div>
                 </div>
 
                 <div className="hidden sm:flex mx-6 gap-[20px]">

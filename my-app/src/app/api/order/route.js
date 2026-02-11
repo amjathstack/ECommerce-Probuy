@@ -5,6 +5,7 @@ import ordersModel from "../../../../models/Order";
 import connectDB from "../../../../config/connectDB";
 import subOrdersModel from "../../../../models/SubOrder";
 import orderItemsModel from "../../../../models/OrderItem";
+import userModel from "../../../../models/User";
 
 export async function POST(req) {
     try {
@@ -26,12 +27,12 @@ export async function POST(req) {
 
             if (exitOrder) {
                 exitOrder.items.push(item)
-                exitOrder.subTotal += item.price*item.quantity
+                exitOrder.subTotal += item.price * item.quantity
             } else {
                 const newOrder = {
                     vendorId: item.vendorId,
                     items: [item],
-                    subTotal: item.price*item.quantity
+                    subTotal: item.price * item.quantity
 
                 }
                 subOrders.push(newOrder)
@@ -56,8 +57,6 @@ export async function POST(req) {
             });
         }
 
-        console.log(subOrders)
-
         for (const order of subOrders) {
 
             const subOrder_response = await subOrdersModel.create({
@@ -65,6 +64,8 @@ export async function POST(req) {
                 vendorId: order.vendorId,
                 subTotal: order.subTotal,
             });
+
+            await userModel.findByIdAndUpdate(order.vendorId, { $inc: { earnings: order.subTotal } }, { new: true });
 
             for (const item of order.items) {
                 const data = {

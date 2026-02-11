@@ -18,7 +18,7 @@ const subOrderSchema = new mongoose.Schema({
         enum: ['Pending',  'Processing', 'Delivered'],
         default: 'Pending'
     }
-});
+}, { timestamps: true });
 
 const subOrdersModel = mongoose.models.SubOrders || mongoose.model('SubOrders', subOrderSchema);
 export default subOrdersModel;

@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useDispatch } from "react-redux";
+import { clearToCart } from "@/features/cart/cartSlice";
 
 
 export default function ProfileMenu({ name, profileMenuStatus, isSeller, onClose }) {
@@ -14,11 +15,16 @@ export default function ProfileMenu({ name, profileMenuStatus, isSeller, onClose
 
     const handleLogout = () => {
         try {
-            signOut()
-            onClose(false);
+
+            signOut({ redirect: false });
             router.push('/');
+            dispatch(clearToCart())
+            onClose(false);
+
         } catch (error) {
+
             console.error(error.message);
+
         }
     }
 

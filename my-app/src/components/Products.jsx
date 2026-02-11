@@ -3,18 +3,19 @@ import React from "react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import preloader from "../../src/assets/preeloader.gif"
 
 
 export default function Products() {
 
-  const { products = [] } = useSelector((state) => state.products);
+  const { products = [], loading } = useSelector((state) => state.products);
   const router = useRouter();
 
 
   return (
 
     <div className="w-full flex justify-center">
-      <section id="featured" className="mt-10 w-[90%]">
+      <section id="featured" className="mt-30 w-[90%]">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold">Featured Products</h3>
           <a href="#deals" className="text-sm text-indigo-600">View all deals</a>
@@ -48,7 +49,16 @@ export default function Products() {
             </div>
 
           ))}
+
         </div>
+        {
+          loading &&
+
+          <div className="w-full flex items-center justify-center">
+            <Image src={preloader} alt="preloader" className="py-20" />
+          </div>
+
+        }
       </section>
     </div>
 

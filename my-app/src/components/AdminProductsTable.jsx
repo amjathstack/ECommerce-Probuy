@@ -4,16 +4,18 @@ import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import EditProductModal from "./EditProductsModel";
+import Image from "next/image";
+import preloader from "../../src/assets/preeloader.gif"
 
-export default function AdminProductsTable({ products }) {
+export default function AdminProductsTable({ products, loading }) {
 
   const [showEditTable, setShowEditTable] = useState(false);
 
   const dispatch = useDispatch();
 
   return (
-    <div className="overflow-x-auto bg-white">
-      <table className="min-w-full text-left text-gray-600">
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-left text-gray-600 bg-white">
         <thead className="text-gray-500 text-[13px] uppercase">
           <tr>
             <th className="px-6 py-3">Product</th>
@@ -24,7 +26,7 @@ export default function AdminProductsTable({ products }) {
           </tr>
         </thead>
         <tbody>
-          {products && products.length > 0 ? (
+          {products && products.length > 0 && (
             products.map((p) => (
               <tr
                 key={p._id}
@@ -37,7 +39,7 @@ export default function AdminProductsTable({ products }) {
                 <td className="px-6 py-4 text-right">
                   <button
                     onClick={() => setShowEditTable(p)}
-                    className="text-indigo-600 hover:text-indigo-800 mr-3"
+                    className="text-indigo-600 hover:text-indigo-800 mr-6"
                   >
                     <Edit size={16} />
                   </button>
@@ -47,16 +49,30 @@ export default function AdminProductsTable({ products }) {
                 </td>
               </tr>
             ))
-          ) : (
-            <tr>
-              <td colSpan={5} className="px-6 py-6 text-center text-gray-500">
-                No products found.
-              </td>
-            </tr>
           )}
+
+          {
+            !loading && products && products.length === 0 && (
+              <tr>
+                <td className="py-10" colSpan="100%" style={{ textAlign: "center" }}>
+                  Products not found
+                </td>
+              </tr>
+            )
+          }
+
         </tbody>
       </table>
-      {showEditTable && <EditProductModal onClose={setShowEditTable} data={showEditTable}/>}
+
+      {
+        !products.length > 0 && loading &&
+        <div className="w-full flex justify-center py-20">
+          <Image src={preloader} alt="preloader" />
+        </div>
+
+      }
+
+      {showEditTable && <EditProductModal onClose={setShowEditTable} data={showEditTable} />}
     </div>
   );
 }

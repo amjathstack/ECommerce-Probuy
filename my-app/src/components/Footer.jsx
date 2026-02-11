@@ -1,34 +1,43 @@
+"use client"
 import React from "react";
 
 export default function Footer() {
     return (
-        <footer className="mt-12 border-t border-gray-100 pt-8 pb-12">
-            <div className="text-center sm:text-space-between max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="sm:text-start">
-                    <div className="font-extrabold text-lg">MarketHub</div>
-                    <p className="mt-2 text-sm text-gray-600">A marketplace where creators and buyers meet.</p>
+        <footer className="mt-40 px-6 md:px-16 lg:px-24 xl:px-32 w-full">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-gray-500/30">
+
+                <div className="max-w-96">
+                    <h1 className="text-[25px] font-semibold text-indigo-600">Probuy</h1>
+                    <p className="mt-6 text-sm text-gray-500">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
+                    </p>
                 </div>
 
-                <div className="text-sm text-gray-600 sm:text-start">
-                    <h5 className="font-semibold">Company</h5>
-                    <ul className="mt-2 space-y-2">
-                        <li>About</li>
-                        <li>Careers</li>
-                        <li>Press</li>
-                    </ul>
+                <div className="w-1/2 flex flex-wrap md:mr-40 justify-between">
+                    <div>
+                        <h2 className="font-semibold text-gray-900 mb-5">RESOURCES</h2>
+                        <ul className="text-sm text-gray-500 space-y-2 list-none">
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Community</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 className="font-semibold text-gray-900 mb-5">COMPANY</h2>
+                        <div className="text-sm text-gray-500 space-y-2 list-none">
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="text-sm text-gray-600 sm:text-start">
-                    <h5 className="font-semibold">Support</h5>
-                    <ul className="mt-2 space-y-2">
-                        <li>Help center</li>
-                        <li>Seller resources</li>
-                        <li>Contact us</li>
-                    </ul>
-                </div>
             </div>
-
-            <div className="mt-12 text-center text-xs text-gray-500">© {new Date().getFullYear()} MarketHub — All rights reserved</div>
+            <p className="py-4 text-center text-xs md:text-sm text-gray-500">
+                Copyright 2026 © <a href="https://prebuiltui.com">PrebuiltUI</a>. All Right Reserved.
+            </p>
         </footer>
     )
 }

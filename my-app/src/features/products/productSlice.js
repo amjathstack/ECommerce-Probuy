@@ -48,7 +48,9 @@ export const addProduct = createAsyncThunk("products/addProduct", async ({ formD
 
   try {
 
-    const response = await axios.post('/api/vendor/products', formData);
+    const response = await axios.post('/api/vendor/products', formData, {
+      timeout: 60000 // 60s
+    });
     console.log(response.data);
     return response.data.message;
 
@@ -65,12 +67,15 @@ export const editProduct = createAsyncThunk("products/editProduct", async ({ for
 
   try {
 
-    const response = await axios.put('/api/vendor/products', formData);
-    console.log(response.data)
+    const response = await axios.put('/api/vendor/products', formData, {
+      timeout: 60000
+    });
+    console.log(response.data);
     return response.data.message;
 
   } catch (err) {
 
+    console.log(err.response?.data);
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to add products");
 
   }

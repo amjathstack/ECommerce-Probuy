@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, clearToCart, deleteCartItems, removeFromCart, updateCart, updateCartItems } from "@/features/cart/cartSlice";
 import AddAddressCard from "@/components/AddAddressCard";
-import { addToOrder, addToOrderItems } from "@/features/order/orderSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export default function CartPage() {
+
+    const { data: session } = useSession();
 
     const dispatch = useDispatch();
     const router = useRouter();
@@ -109,18 +111,16 @@ export default function CartPage() {
     }
 
     useEffect(() => {
-        fetchAddresses();
+        if (session) {
+            fetchAddresses();
+        }
     }, [])
 
-    useEffect(() => {
-        console.log(cartItems);
-    }, [cartItems]);
-
     return (
-        <div className="w-full flex justify-center">
+        <div className="w-full flex min-h-125 justify-center">
             {addressForm && <AddAddressCard onClose={setAddressForm} fetchAddresses={fetchAddresses} />}
             <div className="w-[90%] sm:mt-[80px] mt-[30px]">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">
+                <h1 className="text-xl md:text-xl font-semibold text-gray-800 mb-8">
                     Your Shopping Cart
                 </h1>
 

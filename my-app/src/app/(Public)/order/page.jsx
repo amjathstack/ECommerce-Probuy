@@ -1,15 +1,20 @@
 'use client'
 import OrderDetailsCard from "@/components/OrderDetailsCard";
 import axios from "axios";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import preloader from "../../../assets/preeloader.gif"
 
 export default function OrderPage() {
 
     const [showOrderDetails, setShowOrderDetails] = useState(false);
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     async function fetchOrders() {
+
+        setLoading(true);
 
         try {
 
@@ -17,6 +22,7 @@ export default function OrderPage() {
 
             if (response.data.message && response.data.status) {
                 setOrders(response.data.message);
+                setLoading(false);
                 return
             }
 
@@ -27,15 +33,14 @@ export default function OrderPage() {
             toast.error(response.data.message);
 
         }
+
+        setLoading(false);
+
     }
 
     useEffect(() => {
         fetchOrders()
     }, []);
-
-    useEffect(() => {
-        console.log(orders)
-    }, [orders])
 
     return (
         <div className="w-full min-h-screen p-6 flex flex-col items-center">
@@ -47,7 +52,7 @@ export default function OrderPage() {
 
             <div className="md:w-[90%] w-[100%] grid gap-4">
 
-                {Array.isArray(orders) && orders.length > 0 ? orders.map((order, index) =>
+                {Array.isArray(orders) && orders.length > 0 && orders.map((order, index) =>
                     <div
                         key={index}
                         className="border border-gray-300 shadow-sm bg-white p-6 gap-3 rounded-md flex flex-col md:flex-row md:justify-between"
@@ -86,8 +91,18 @@ export default function OrderPage() {
                         </div>
 
                     </div>
-                ) : <p className="text-center">Orders not found</p>
+                )
                 }
+
+                {
+                    loading &&
+
+                    <div className="w-full flex items-center justify-center">
+                        <Image src={preloader} alt="preloader" className="py-20" />
+                    </div>
+
+                }
+
             </div>
         </div>
     );

@@ -183,6 +183,7 @@ export default function ProductView({ params }) {
               <span className="text-sm font-medium text-gray-600">Quantity:</span>
               <div className="flex items-center border rounded-full overflow-hidden">
                 <button
+                  disabled={existItemInCart}
                   onClick={() => setQuantity((Prev) => Prev > 1 ? Prev - 1 : 1)}
                   className="px-3 py-1 text-lg font-semibold text-gray-600 hover:bg-gray-100"
                 >
@@ -190,6 +191,7 @@ export default function ProductView({ params }) {
                 </button>
                 <span className="flex justify-center w-[45px] text-gray-800">{quantity}</span>
                 <button
+                  disabled={existItemInCart}
                   onClick={() => setQuantity((Prev) => Prev < product.stockCount ? Prev + 1 : product.stockCount)}
                   className="px-3 py-1 text-lg font-semibold text-gray-600 hover:bg-gray-100"
                 >
