@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const URL = "http://localhost:3000/api/order";
+const URL = "/api/order";
 
 export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (token, thunkAPI) => {
   try {
@@ -15,7 +15,7 @@ export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (token, 
 
 export const fetchAllOrders = createAsyncThunk("orders/fetchAllOrders", async (token, thunkAPI) => {
   try {
-    const response = await axios.get("http://localhost:3000/api/order/admin", { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    const response = await axios.get("/api/order/admin", { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
     return response.data.message;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data || "Failed to fetch cart");

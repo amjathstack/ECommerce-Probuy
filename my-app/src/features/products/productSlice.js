@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 
-const URL = "http://localhost:3000/api/products";
+const URL = "/api/products";
 
 export const fetchProductTitle = createAsyncThunk(
   "products/fetchProductTitle",
