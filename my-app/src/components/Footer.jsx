@@ -9,7 +9,7 @@ export default function Footer() {
                 <div className="max-w-96">
                     <h1 className="text-[25px] font-semibold text-indigo-600">Probuy</h1>
                     <p className="mt-6 text-sm text-gray-500">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
+                        Discover unique products from hundreds of independent vendors — all in one place.
                     </p>
                 </div>
 
