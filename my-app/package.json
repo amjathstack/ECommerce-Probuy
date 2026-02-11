@@ -12,7 +12,7 @@
     "@google/genai": "^1.38.0",
     "@material-tailwind/react": "^2.1.10",
     "@reduxjs/toolkit": "^2.9.0",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.8.0",
     "crypto": "^1.0.1",
