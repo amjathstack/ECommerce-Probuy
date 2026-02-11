@@ -16,7 +16,7 @@ export async function POST(req) {
         const name = body.get('name');
         const profile = body.get('profile');
 
-        const user = await userModel.findOne({firebaseUid:uid});
+        const user = await userModel.findOne({ firebaseUid: uid });
 
         if (profile) {
             const bytes = await profile.arrayBuffer();
@@ -36,14 +36,14 @@ export async function POST(req) {
             user.profileImage = result.secure_url;
             await user.save()
 
-            return NextResponse.json({status:true, message:'User updated!'})
+            return NextResponse.json({ status: true, message: 'User updated!' })
         } else {
             user.name = name;
             await user.save();
-            return NextResponse.json({status:true, message:'User updated!'})
+            return NextResponse.json({ status: true, message: 'User updated!' })
         }
 
     } catch (error) {
-        return NextResponse.json({status:false, message:error.message})
+        return NextResponse.json({ status: false, message: error.message })
     }
 }

@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.35.5",
     "@google/genai": "^1.38.0",
     "@material-tailwind/react": "^2.1.10",
     "@reduxjs/toolkit": "^2.9.0",
@@ -17,8 +16,6 @@
     "cloudinary": "^2.8.0",
     "crypto": "^1.0.1",
     "date-fns": "^4.1.0",
-    "firebase": "^12.4.0",
-    "firebase-admin": "^13.6.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.553.0",
     "mongodb": "^7.1.0",
