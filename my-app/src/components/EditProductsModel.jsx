@@ -4,9 +4,7 @@ import upload_icon from '../../public/icons/upload_icon.svg'
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, clearProductDetails, editProduct, fetchProductTitle } from "@/features/products/productSlice";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { clearProductDetails, editProduct } from "@/features/products/productSlice";
 
 export default function EditProductModal({ onClose, data }) {
 

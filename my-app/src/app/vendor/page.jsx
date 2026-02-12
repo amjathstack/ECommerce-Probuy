@@ -40,11 +40,6 @@ const Dashboard = () => {
 
   }, [])
 
-
-  useEffect(() => {
-    console.log(data)
-  }, [data]);
-
   return (
     <div className="w-full md:w-[85%] bg-gray-50 flex md:ml-[15%]">
       <main className="flex-1 p-10">

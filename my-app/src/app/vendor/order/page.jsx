@@ -77,10 +77,6 @@ export default function AdminOrdersList() {
 
     }, []);
 
-    useEffect(() => {
-        console.log(orders)
-    }, [orders])
-
 
     return (
         <div className="w-full bg-gray-50 md:w-[85%] md:p-10 p-1 md:ml-[15%]">

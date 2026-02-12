@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import {
     closeSignUpCard,
     openLoginCard,
-    openSignUpCard,
 } from "@/features/components/componentsSlice";
 import axios from "axios";
 import { signIn } from "next-auth/react";

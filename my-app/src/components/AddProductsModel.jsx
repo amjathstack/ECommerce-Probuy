@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, clearProductDetails, fetchProductTitle } from "@/features/products/productSlice";
-import axios from "axios";
-import { toast } from "react-toastify";
 
 export default function AddProductModal({ onClose, setProducts }) {
 

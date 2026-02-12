@@ -15,11 +15,7 @@ export default function OrderDetailsCard({ order, onSetShow }) {
 
         return () => document.body.style.overflow = "";
 
-    }, [order])
-
-    useEffect(() => {
-        console.log(order)    
-    }, [order])
+    }, [order]);
 
     return (
         <div className="fixed w-full h-full insert-0 top-0 left-0 flex items-center justify-center bg-white/40 z-50">
