@@ -77,7 +77,7 @@ function SignUpCard() {
     }, [signUpCardStatus]);
 
     useEffect(() => {
-        if(!loading && formClose){
+        if (!loading && formClose) {
             dispatch(closeSignUpCard());
         }
     }, [loading, formClose])
@@ -228,10 +228,11 @@ function SignUpCard() {
                                     ${loading ? "cursor-not-allowed opacity-80" : ""}
                                   `}
                     >
-                        {loading && (
+                        {loading ? (
                             <p>Loading...</p>
-                        )}
-                        Create Account
+                        ) : <p>Create Account</p>
+                        }
+
                     </button>
                 </form>
 

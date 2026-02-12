@@ -154,10 +154,10 @@ function LoginCard() {
                                     ${loading ? "cursor-not-allowed opacity-80" : ""}
                                   `}
                     >
-                        {loading && (
+                        {loading ? (
                             <p>Loading...</p>
-                        )}
-                        Sign In
+                        ) : <p>Sign In</p>}
+
                     </button>
                 </form>
 
