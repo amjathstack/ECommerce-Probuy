@@ -1,16 +1,21 @@
 'use client'
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import preloader from "../../src/assets/preeloader.gif"
+import { fetchProducts } from "@/features/products/productSlice";
 
 
 export default function Products() {
 
   const { products = [], loading } = useSelector((state) => state.products);
   const router = useRouter();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [])
 
   return (
 
