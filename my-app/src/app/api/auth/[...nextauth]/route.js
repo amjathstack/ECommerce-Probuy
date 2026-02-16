@@ -54,6 +54,8 @@ export const authOptions = {
         async signIn({ user, account }) {
             if (account?.provider !== "google") return true;
 
+            console.log(user.name, user.email);
+
             try {
                 await connectDB();
 
@@ -74,8 +76,11 @@ export const authOptions = {
                 user.profileImage = dbUser.profileImage;
 
                 return true;
+
             } catch (err) {
+
                 console.error("Google sign-in error:", err);
+
                 return false;
             }
 
