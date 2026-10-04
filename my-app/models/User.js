@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     cart: { type: Array, default: [] },
     isSeller: { type: Boolean, default: false },
     addresses: [addressesSchema],
+    savedProducts: { type: Array, default: [] },
     title: { type: String },
     description: { type: String },
     profileImage: { type: String, default: '' },

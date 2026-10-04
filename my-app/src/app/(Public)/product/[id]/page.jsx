@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import back_icon from '../../../../../public/icons/back.svg'
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/features/products/productSlice";
@@ -11,6 +10,7 @@ import RatingStar from "@/components/RatingStar";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { ChevronRight, EyeIcon, Heart, RefreshCw, ShieldCheck, ShoppingBag, StarIcon, Store, Truck } from "lucide-react";
 
 
 export default function ProductView({ params }) {
@@ -19,34 +19,23 @@ export default function ProductView({ params }) {
   const resolvedParams = React.use(params);
   const id = resolvedParams?.id
   const dispatch = useDispatch();
+
   const { cartItems } = useSelector((state) => state.cart);
   const [rating, setRating] = useState(0);
+  const [product, setProduct] = useState(null);
 
   const { data: session } = useSession();
 
-  const { products } = useSelector((state) => state.products)
 
-  const product = products.find((item) => item._id === id);
-  const [mainImage, setMainImage] = useState(product?.image[0]);
+
+  const [mainImage, setMainImage] = useState(Array.isArray(product?.image) ? product?.image[0] : null);
   const existItemInCart = cartItems?.find((i) => i.productId === product?._id);
 
-  const [commentList, setCommentList] = useState([]);
+  const [reviewList, setReviewList] = useState(product?.reviews || []);
 
   const [quantity, setQuantity] = useState(1);
   const [comment, setComment] = useState("");
 
-  async function fetchComments() {
-    try {
-
-      const response = await axios.get(`/api/comments?productId=${product?._id}`);
-      if (response.data.status && response.data.message) {
-        setCommentList(response.data.message);
-      }
-
-    } catch (error) {
-
-    }
-  }
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -65,10 +54,10 @@ export default function ProductView({ params }) {
     formData.append('rating', rating);
     formData.append('comment', comment);
 
-    const response = await axios.post("/api/comments", formData);
+    const response = await axios.post("/api/reviews", formData);
 
     if (response.data.status && response.data.message) {
-      setComment(setCommentList(response.data.message))
+      setComment(setReviewList(response.data.message))
     } else {
       return toast.error(response.data.message)
     }
@@ -78,14 +67,11 @@ export default function ProductView({ params }) {
   };
 
 
-  const handleCartBuy = (k) => {
+  const handleCart = () => {
+
     if (!session) {
       toast.warning("Please log in to use the cart");
       return;
-    }
-
-    if (k == "B") {
-      router.push('/cart')
     }
 
     const formData = new FormData();
@@ -101,26 +87,45 @@ export default function ProductView({ params }) {
 
   };
 
-  const back = () => {
-    router.push('/');
+  async function fetchProduct() {
+
+    const response = await axios.get(`/api/products/product_by_id?productId=${id}`);
+
+    if (response) {
+      setProduct(response.data.message)
+    }
+
   }
 
   useEffect(() => {
     dispatch(fetchProducts())
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchComments({ productId: product?._id });
-  }, [product?._id]);
+    setMainImage(Array.isArray(product?.image) ? product?.image[0] : null);
+  }, [product]);
 
   useEffect(() => {
-    setMainImage(product?.image[0]);
-  }, [product?.image[0]])
+    fetchProduct()
+  }, []);
+
+  useEffect(() => {
+    if (product) {
+      setReviewList(product?.reviews)
+    }
+  }, [product]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-8 w-full felx justify-center">
-      <div className="w-full mx-auto p-6 md:p-10 lg:w-[90%] relative">
-        <button onClick={() => back()} className="p-1 hover:bg-gray-100 rounded-full absolute top-5" ><Image className="w-[27px] md:w-[35px] lg:w-[33px]" src={back_icon} alt="back_icon" /></button>
+    <div className="bg-gray-50 w-full felx justify-center">
+
+      <div className="w-full p-6 md:p-10 lg:px-50 relative">
+
+        <nav className="mx-auto flex items-center gap-2 text-sm text-slate-400">
+          <span>Marketplace</span> <ChevronRight size={14} />
+          <span>Electronics</span> <ChevronRight size={14} />
+          <span className="text-slate-900 font-medium truncate">{product?.title}</span>
+        </nav>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
 
           <div className="w-[100%] flex flex-col items-center lg:items-start">
@@ -142,7 +147,7 @@ export default function ProductView({ params }) {
             </div>
 
             <div className="w-[100%] mt-4 flex gap-3 lg:w-[80%] md:w-[80%]">
-              {product?.image.map((image, idx) => (
+              {Array.isArray(product?.image) && product?.image.map((image, idx) => (
                 <button
                   key={idx}
                   onClick={() => setMainImage(image)}
@@ -162,64 +167,102 @@ export default function ProductView({ params }) {
 
 
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">{product?.title}</h1>
 
-            <div className="mt-3 text-2xl font-semibold text-indigo-600">
-              ${product?.price.toFixed(2)}
+            <div className="space-y-4">
+
+              <div className="flex items-center gap-2">
+
+                <span className="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Top Rated</span>
+
+                <div className="flex items-center text-yellow-400 gap-1 ml-2">
+                  <StarIcon size={16} fill="currentColor" />
+                  <span className="text-slate-900 font-bold">{product?.rating}</span>
+                  <span className="text-slate-400 font-normal">( reviews)</span>
+                </div>
+
+              </div>
+
+              <h1 className="text-3xl md:text-3xl font-black text-slate-900 leading-tight mt-2">
+                {product?.title}
+              </h1>
+
+              <div className="flex items-end gap-3 mt-2">
+                <span className="text-2xl font-black text-slate-900">${product?.price}</span>
+                <span className="text-slate-400 line-through text-lg">$349.99</span>
+              </div>
+
             </div>
 
-            <p className="mt-3 text-gray-700 leading-relaxed">{product?.description}</p>
+            <p className="text-sm text-slate-500 leading-relaxed mt-2">
+              {product?.description}
+            </p>
 
-            <p className="mt-2 text-sm text-gray-500">⭐/ {commentList.length > 0
-              ? commentList?.reduce((t, c) => c.rating + t, 0) / commentList?.length.toFixed(1)
-              : 0
-            }</p>
+            <div className="flex flex-col sm:flex-row gap-4 mt-4">
 
-            <p className="mt-3 text-[14px] text-gray-700 leading-relaxed">From: <a href="#" className="hover:text-indigo-600">{product?.vendorId?.title}</a></p>
+              {
+                existItemInCart
+                  ?
+                  <button className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95">
+                    <EyeIcon size={20} />
+                    View cart
+                  </button>
+                  : <button onClick={() => handleCart()} className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95">
+                    <ShoppingBag size={20} />
+                    Add to Cart
+                  </button>
 
-            <p className="mt-3 text-gray-700">Availibility : {product?.stockCount > 0 ? <span className="text-[green]">In stock</span> : <span className="text-[red]">Sold out</span>}</p>
+              }
 
-            <div className="mt-5 flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-600">Quantity:</span>
-              <div className="flex items-center border rounded-full overflow-hidden">
-                <button
-                  disabled={existItemInCart}
-                  onClick={() => setQuantity((Prev) => Prev > 1 ? Prev - 1 : 1)}
-                  className="px-3 py-1 text-lg font-semibold text-gray-600 hover:bg-gray-100"
-                >
-                  −
-                </button>
-                <span className="flex justify-center w-[45px] text-gray-800">{quantity}</span>
-                <button
-                  disabled={existItemInCart}
-                  onClick={() => setQuantity((Prev) => Prev < product.stockCount ? Prev + 1 : product.stockCount)}
-                  className="px-3 py-1 text-lg font-semibold text-gray-600 hover:bg-gray-100"
-                >
-                  +
-                </button>
+              <button className="p-4 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-red-500 hover:border-red-100 transition-all">
+                <Heart className="text-[red]" size={24} />
+              </button>
+            </div>
+
+            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-300 mt-4">
+
+              <div className="flex items-center justify-between">
+                <div className="flex pb-3 items-center gap-3">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 font-bold">
+                    <Store size={24} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900">{product?.vendorId?.name}</h4>
+                    <p className="text-xs text-slate-400">Verified Probuy Vendor since 2021</p>
+                  </div>
+                </div>
+                <button className="text-xs font-bold text-indigo-600 hover:underline">Visit Store</button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200">
+                <div className="text-center pt-2">
+                  <p className="text-sm font-bold"> 52</p>
+                  <p className="text-[10px] text-slate-400 uppercase">Rating</p>
+                </div>
+                <div className="text-center pt-2 border-x border-slate-200">
+                  <p className="text-sm font-bold"> 10</p>
+                  <p className="text-[10px] text-slate-400 uppercase">Products</p>
+                </div>
+                <div className="text-center pt-2">
+                  <p className="text-sm font-bold text-green-600">98%</p>
+                  <p className="text-[10px] text-slate-400 uppercase">Ship Rate</p>
+                </div>
               </div>
             </div>
 
-            {!existItemInCart ?
-              <div className="mt-6 flex gap-3">
-                <button onClick={() => handleCartBuy("C")} className="flex-1 rounded-full bg-indigo-600 text-white py-3 font-medium hover:bg-indigo-700">
-                  Add to Cart
-                </button>
-                <button onClick={() => handleCartBuy("B")} className="flex-1 rounded-full border border-indigo-600 text-indigo-600 py-3 font-medium hover:bg-indigo-50">
-                  Buy Now
-                </button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <div className="flex items-center sm:justify-center gap-2 text-xs text-slate-500 font-medium">
+                <Truck size={16} className="text-indigo-600" /> Free Shipping
               </div>
-              : <div className="mt-6 flex gap-3">
-                <button onClick={() => router.push('/cart')} className="flex-1 rounded-full bg-indigo-600 text-white py-3 font-medium hover:bg-indigo-700">
-                  View Cart
-                </button>
-                <button onClick={() => handleCartBuy("B")} className="flex-1 rounded-full border border-indigo-600 text-indigo-600 py-3 font-medium hover:bg-indigo-50">
-                  Buy Now
-                </button>
+              <div className="flex items-center sm:justify-center gap-2 text-xs text-slate-500 font-medium">
+                <RefreshCw size={16} className="text-indigo-600" /> 30-Day Returns
               </div>
-            }
+              <div className="flex items-center sm:justify-center gap-2 text-xs text-slate-500 font-medium">
+                <ShieldCheck size={16} className="text-indigo-600" /> Secure Checkout
+              </div>
+            </div>
 
           </div>
+
         </div>
 
 
@@ -227,7 +270,7 @@ export default function ProductView({ params }) {
           <h2 className="text-lg font-semibold text-gray-800">Customer Reviews</h2>
 
           <div className="mt-4 space-y-4">
-            {Array.isArray(commentList) && commentList.length > 0 && commentList?.map((c, i) => (
+            {Array.isArray(reviewList) && reviewList.length > 0 && reviewList?.map((c, i) => (
               <div key={i} className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-100 w-full lg:w-[50%]">
                 <div className="flex gap-2 items-center">
                   <Image src={c?.userId?.profileImage || profile} width={1000} height={1000} className="w-6 h-6 border border-gray-300 rounded-full" alt="profile-image" />

@@ -9,7 +9,9 @@ export async function GET() {
   try {
 
     await connectDB();
+
     const products = await productsModel.find().populate("vendorId");
+
     return NextResponse.json({ status: true, message: products })
 
   } catch (error) {
